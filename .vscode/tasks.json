@@ -1,0 +1,160 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "configure-debug",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--preset",
+                "debug"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "configure-release",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--preset",
+                "release"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "configure-sanitizers",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--preset",
+                "sanitizers"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "build-debug",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build/debug",
+                "--parallel"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": ["configure-debug"],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "build-release",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build/release",
+                "--parallel"
+            ],
+            "group": "build",
+            "dependsOn": ["configure-release"],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "build-sanitizers",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build/sanitizers",
+                "--parallel"
+            ],
+            "group": "build",
+            "dependsOn": ["configure-sanitizers"],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "test-debug",
+            "type": "shell",
+            "command": "ctest",
+            "args": [
+                "--test-dir",
+                "build/debug",
+                "--output-on-failure"
+            ],
+            "group": "test",
+            "dependsOn": ["build-debug"],
+            "problemMatcher": []
+        },
+        {
+            "label": "test-sanitizers",
+            "type": "shell",
+            "command": "ctest",
+            "args": [
+                "--test-dir",
+                "build/sanitizers",
+                "--output-on-failure"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "dependsOn": ["build-sanitizers"],
+            "problemMatcher": []
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "rm",
+            "args": [
+                "-rf",
+                "build"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "run-debug",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/debug/bin/vibegl",
+            "options": {
+                "cwd": "${workspaceFolder}/data",
+                "env": {
+                    "LSAN_OPTIONS": "suppressions=${workspaceFolder}/.lsan_suppressions"
+                }
+            },
+            "dependsOn": ["build-debug"],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "focus": true
+            }
+        },
+        {
+            "label": "run-release",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/release/bin/vibegl",
+            "options": {
+                "cwd": "${workspaceFolder}/data",
+                "env": {
+                    "LSAN_OPTIONS": "suppressions=${workspaceFolder}/.lsan_suppressions"
+                }
+            },
+            "dependsOn": ["build-release"],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "focus": true
+            }
+        }
+    ]
+}

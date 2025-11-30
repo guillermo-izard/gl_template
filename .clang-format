@@ -1,0 +1,67 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+Standard: c++23
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+AccessModifierOffset: -4
+NamespaceIndentation: None
+
+# Line breaking
+ColumnLimit: 100
+BreakBeforeBraces: Allman
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortBlocksOnASingleLine: Empty
+AlwaysBreakTemplateDeclarations: Yes
+
+# Alignment
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: None
+AlignOperands: Align
+AlignTrailingComments: true
+AlignAfterOpenBracket: Align
+
+# Pointers and references
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+# Spacing
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: false
+SpaceBeforeCpp11BracedList: false
+SpacesInAngles: Never
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# Include sorting
+SortIncludes: CaseInsensitive
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex:           '^<glad/.*'
+    Priority:        1
+  - Regex:           '^<GLFW/.*'
+    Priority:        2
+  - Regex:           '^<glm/.*'
+    Priority:        3
+  - Regex:           '^<imgui.*'
+    Priority:        4
+  - Regex:           '^<spdlog/.*'
+    Priority:        5
+  - Regex:           '^<stb_.*'
+    Priority:        6
+  - Regex:           '^<[^/]*>'
+    Priority:        10
+  - Regex:           '.*'
+    Priority:        20
+
+# Other
+FixNamespaceComments: true
+ReflowComments: true
+SortUsingDeclarations: true
+...

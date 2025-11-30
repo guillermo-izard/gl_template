@@ -1,0 +1,116 @@
+# Build directories
+build/
+out/
+cmake-build-*/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# C++ compiled files
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Cache and temporary files
+.cache/
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# IDE - Visual Studio Code
+.vscode/*.log
+
+# Claude Code
+.claude/
+
+# IDE - Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.opendb
+
+# IDE - CLion
+.idea/
+cmake-build-*/
+
+# IDE - Qt Creator
+*.pro.user
+*.pro.user.*
+CMakeLists.txt.user*
+
+# OS - Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# OS - macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# OS - Linux
+*~
+.directory
+.Trash-*
+
+# ccache
+.ccache/
+
+# Ninja
+.ninja_deps
+.ninja_log
+
+# Sanitizer output
+*.dSYM/
+
+# Core dumps
+core
+core.*
+
+# Don't ignore data folder but ignore its contents except shaders and textures
+!data/
+!data/shaders/
+!data/textures/
+data/*
+!data/.gitkeep

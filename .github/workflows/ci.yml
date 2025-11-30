@@ -1,0 +1,125 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    name: Code Formatting Check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format-18
+
+      - name: Check formatting
+        run: |
+          find src tests -name "*.cpp" -o -name "*.h" | xargs clang-format-18 --dry-run --Werror
+
+  build:
+    name: ${{ matrix.os }} - ${{ matrix.compiler }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux builds
+          - os: ubuntu-24.04
+            compiler: gcc-13
+            cc: gcc-13
+            cxx: g++-13
+            preset: sanitizers
+
+          - os: ubuntu-24.04
+            compiler: clang-18
+            cc: clang-18
+            cxx: clang++-18
+            preset: sanitizers
+
+          # Windows build
+          - os: windows-latest
+            compiler: msvc
+            preset: debug
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            ninja-build \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libgl1-mesa-dev \
+            ${{ matrix.cxx }}
+
+      - name: Install Windows dependencies
+        if: runner.os == 'Windows'
+        run: |
+          choco install ninja
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.28.x'
+
+      - name: Configure (Linux)
+        if: runner.os == 'Linux'
+        env:
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx }}
+        run: cmake --preset ${{ matrix.preset }}
+
+      - name: Configure (Windows)
+        if: runner.os == 'Windows'
+        run: cmake --preset ${{ matrix.preset }}
+
+      - name: Build
+        run: cmake --build build/${{ matrix.preset }} --parallel
+
+      - name: Test
+        run: ctest --test-dir build/${{ matrix.preset }} --output-on-failure
+
+  clang-tidy:
+    name: Static Analysis (clang-tidy)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            ninja-build \
+            clang-18 \
+            clang-tidy-18 \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libgl1-mesa-dev
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.28.x'
+
+      - name: Configure
+        env:
+          CC: clang-18
+          CXX: clang++-18
+        run: cmake --preset debug
+
+      - name: Run clang-tidy
+        run: |
+          find src -name "*.cpp" | xargs clang-tidy-18 -p build/debug

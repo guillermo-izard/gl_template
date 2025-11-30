@@ -1,0 +1,6 @@
+# LeakSanitizer suppressions for known false positives
+
+# GLFW/Mesa GLX initialization creates static data that persists for program lifetime
+# This is a known false positive in the OpenGL driver stack on Linux/X11
+leak:extensionSupportedGLX
+leak:_glfwInitGLX

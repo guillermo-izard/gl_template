@@ -1,0 +1,31 @@
+{
+    // CMake Tools extension configuration
+    "cmake.debugConfig": {
+        "cwd": "${workspaceFolder}/data",
+        "environment": [
+            {
+                "name": "LSAN_OPTIONS",
+                "value": "suppressions=${workspaceFolder}/.lsan_suppressions"
+            }
+        ]
+    },
+    "cmake.environment": {
+        "CTEST_OUTPUT_ON_FAILURE": "1",
+        "LSAN_OPTIONS": "suppressions=${workspaceFolder}/.lsan_suppressions"
+    },
+    "cmake.buildDirectory": "${workspaceFolder}/build/${buildType}",
+
+    // C++ IntelliSense
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+
+    // Editor formatting
+    "editor.formatOnSave": false,
+    "[cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+        "editor.formatOnSave": true
+    },
+    "[c]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+        "editor.formatOnSave": true
+    }
+}
