@@ -45,7 +45,7 @@ jobs:
           # Windows build
           - os: windows-latest
             compiler: msvc
-            preset: debug
+            preset: release
 
     steps:
       - uses: actions/checkout@v4
@@ -73,6 +73,10 @@ jobs:
         with:
           cmake-version: '3.28.x'
 
+      - name: Setup MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
       - name: Configure (Linux)
         if: runner.os == 'Linux'
         env:
@@ -82,7 +86,7 @@ jobs:
 
       - name: Configure (Windows)
         if: runner.os == 'Windows'
-        run: cmake --preset ${{ matrix.preset }}
+        run: cmake --preset ${{ matrix.preset }} -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl
 
       - name: Build
         run: cmake --build build/${{ matrix.preset }} --parallel
