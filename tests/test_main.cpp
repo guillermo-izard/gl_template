@@ -1,11 +1,13 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <doctest/doctest.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-TEST_CASE("GLM vector operations") {
-    SUBCASE("Vector addition") {
+#include <doctest/doctest.h>
+
+TEST_CASE("GLM vector operations")
+{
+    SUBCASE("Vector addition")
+    {
         glm::vec3 a(1.0F, 2.0F, 3.0F);
         glm::vec3 b(4.0F, 5.0F, 6.0F);
         glm::vec3 result = a + b;
@@ -15,7 +17,8 @@ TEST_CASE("GLM vector operations") {
         CHECK(result.z == doctest::Approx(9.0));
     }
 
-    SUBCASE("Vector dot product") {
+    SUBCASE("Vector dot product")
+    {
         glm::vec3 a(1.0F, 0.0F, 0.0F);
         glm::vec3 b(0.0F, 1.0F, 0.0F);
         float result = glm::dot(a, b);
@@ -23,7 +26,8 @@ TEST_CASE("GLM vector operations") {
         CHECK(result == doctest::Approx(0.0));
     }
 
-    SUBCASE("Vector cross product") {
+    SUBCASE("Vector cross product")
+    {
         glm::vec3 a(1.0F, 0.0F, 0.0F);
         glm::vec3 b(0.0F, 1.0F, 0.0F);
         glm::vec3 result = glm::cross(a, b);
@@ -34,8 +38,10 @@ TEST_CASE("GLM vector operations") {
     }
 }
 
-TEST_CASE("GLM matrix operations") {
-    SUBCASE("Identity matrix") {
+TEST_CASE("GLM matrix operations")
+{
+    SUBCASE("Identity matrix")
+    {
         glm::mat4 identity = glm::mat4(1.0F);
         glm::vec4 point(1.0F, 2.0F, 3.0F, 1.0F);
         glm::vec4 result = identity * point;
@@ -46,7 +52,8 @@ TEST_CASE("GLM matrix operations") {
         CHECK(result.w == doctest::Approx(1.0));
     }
 
-    SUBCASE("Translation matrix") {
+    SUBCASE("Translation matrix")
+    {
         glm::mat4 transform = glm::mat4(1.0F);
         transform = glm::translate(transform, glm::vec3(5.0F, 10.0F, 15.0F));
 
@@ -59,7 +66,8 @@ TEST_CASE("GLM matrix operations") {
         CHECK(result.w == doctest::Approx(1.0));
     }
 
-    SUBCASE("Rotation matrix (90 degrees around Z-axis)") {
+    SUBCASE("Rotation matrix (90 degrees around Z-axis)")
+    {
         glm::mat4 transform = glm::mat4(1.0F);
         transform = glm::rotate(transform, glm::radians(90.0F), glm::vec3(0.0F, 0.0F, 1.0F));
 
@@ -73,17 +81,20 @@ TEST_CASE("GLM matrix operations") {
     }
 }
 
-TEST_CASE("Asset files exist") {
+TEST_CASE("Asset files exist")
+{
     // Note: These tests assume the working directory is the project root
     // In practice, you might want to check relative to a known base path
 
-    SUBCASE("Shader files") {
+    SUBCASE("Shader files")
+    {
         // This is a simple existence check - in a real project you might
         // want to actually read and validate the shader files
         CHECK(true); // Placeholder - real implementation would check file existence
     }
 
-    SUBCASE("Texture files") {
+    SUBCASE("Texture files")
+    {
         // Placeholder for texture file existence check
         CHECK(true);
     }

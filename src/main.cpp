@@ -1,11 +1,15 @@
 #include <glad/glad.h>
+
 #include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+
 #include <spdlog/spdlog.h>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -75,9 +79,11 @@ constexpr std::array<GLuint, 36> CUBE_INDICES = {
 };
 // clang-format on
 
-std::string readFile(const std::string& filepath) {
+std::string readFile(const std::string& filepath)
+{
     std::ifstream file(filepath);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         spdlog::error("Failed to open file: {}", filepath);
         return "";
     }
@@ -86,7 +92,8 @@ std::string readFile(const std::string& filepath) {
     return buffer.str();
 }
 
-GLuint compileShader(GLenum type, const std::string& source) {
+GLuint compileShader(GLenum type, const std::string& source)
+{
     GLuint shader = glCreateShader(type);
     const char* src = source.c_str();
     glShaderSource(shader, 1, &src, nullptr);
@@ -94,7 +101,8 @@ GLuint compileShader(GLenum type, const std::string& source) {
 
     GLint success = 0;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (success == GL_FALSE) {
+    if (success == GL_FALSE)
+    {
         GLint logLength = 0;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
         std::vector<char> errorLog(static_cast<size_t>(logLength));
@@ -106,22 +114,27 @@ GLuint compileShader(GLenum type, const std::string& source) {
     return shader;
 }
 
-GLuint createShaderProgram(const std::string& vertPath, const std::string& fragPath) {
+GLuint createShaderProgram(const std::string& vertPath, const std::string& fragPath)
+{
     std::string vertSource = readFile(vertPath);
     std::string fragSource = readFile(fragPath);
 
-    if (vertSource.empty() || fragSource.empty()) {
+    if (vertSource.empty() || fragSource.empty())
+    {
         return 0;
     }
 
     GLuint vertShader = compileShader(GL_VERTEX_SHADER, vertSource);
     GLuint fragShader = compileShader(GL_FRAGMENT_SHADER, fragSource);
 
-    if (vertShader == 0 || fragShader == 0) {
-        if (vertShader != 0) {
+    if (vertShader == 0 || fragShader == 0)
+    {
+        if (vertShader != 0)
+        {
             glDeleteShader(vertShader);
         }
-        if (fragShader != 0) {
+        if (fragShader != 0)
+        {
             glDeleteShader(fragShader);
         }
         return 0;
@@ -134,7 +147,8 @@ GLuint createShaderProgram(const std::string& vertPath, const std::string& fragP
 
     GLint success = 0;
     glGetProgramiv(program, GL_LINK_STATUS, &success);
-    if (success == GL_FALSE) {
+    if (success == GL_FALSE)
+    {
         GLint logLength = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
         std::vector<char> errorLog(static_cast<size_t>(logLength));
@@ -152,14 +166,16 @@ GLuint createShaderProgram(const std::string& vertPath, const std::string& fragP
     return program;
 }
 
-GLuint loadTexture(const std::string& filepath) {
+GLuint loadTexture(const std::string& filepath)
+{
     int width = 0;
     int height = 0;
     int channels = 0;
     stbi_set_flip_vertically_on_load(1);
     unsigned char* data = stbi_load(filepath.c_str(), &width, &height, &channels, 4);
 
-    if (data == nullptr) {
+    if (data == nullptr)
+    {
         spdlog::error("Failed to load texture: {}", filepath);
         return 0;
     }
@@ -182,23 +198,28 @@ GLuint loadTexture(const std::string& filepath) {
     return texture;
 }
 
-void framebufferSizeCallback(GLFWwindow* /*window*/, int width, int height) {
+void framebufferSizeCallback(GLFWwindow* /*window*/, int width, int height)
+{
     glViewport(0, 0, width, height);
 }
 
-void keyCallback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+void keyCallback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 }
 
-int main() {
+int main()
+{
     // Initialize spdlog
     spdlog::set_level(spdlog::level::info);
     spdlog::info("Starting VibeGL...");
 
     // Initialize GLFW
-    if (glfwInit() == GLFW_FALSE) {
+    if (glfwInit() == GLFW_FALSE)
+    {
         spdlog::error("Failed to initialize GLFW");
         return -1;
     }
@@ -213,7 +234,8 @@ int main() {
     // Create window
     GLFWwindow* window =
         glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, nullptr, nullptr);
-    if (window == nullptr) {
+    if (window == nullptr)
+    {
         spdlog::error("Failed to create GLFW window");
         glfwTerminate();
         return -1;
@@ -225,7 +247,8 @@ int main() {
     glfwSwapInterval(1); // Enable vsync
 
     // Initialize GLAD
-    if (gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)) == 0) {
+    if (gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)) == 0)
+    {
         spdlog::error("Failed to initialize GLAD");
         glfwDestroyWindow(window);
         glfwTerminate();
@@ -249,7 +272,8 @@ int main() {
 
     // Create shader program
     GLuint shaderProgram = createShaderProgram("shaders/cube.vert", "shaders/cube.frag");
-    if (shaderProgram == 0) {
+    if (shaderProgram == 0)
+    {
         spdlog::error("Failed to create shader program");
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
@@ -261,7 +285,8 @@ int main() {
 
     // Load texture
     GLuint texture = loadTexture("textures/sample.png");
-    if (texture == 0) {
+    if (texture == 0)
+    {
         spdlog::error("Failed to load texture");
         glDeleteProgram(shaderProgram);
         ImGui_ImplOpenGL3_Shutdown();
@@ -289,8 +314,8 @@ int main() {
 
     // Upload index data
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * CUBE_INDICES.size(),
-                 CUBE_INDICES.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * CUBE_INDICES.size(), CUBE_INDICES.data(),
+                 GL_STATIC_DRAW);
 
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
@@ -317,7 +342,8 @@ int main() {
     spdlog::info("Entering main loop");
 
     // Main loop
-    while (glfwWindowShouldClose(window) == 0) {
+    while (glfwWindowShouldClose(window) == 0)
+    {
         // Calculate delta time
         auto currentTime = static_cast<float>(glfwGetTime());
         float deltaTime = currentTime - lastFrameTime;
@@ -325,7 +351,8 @@ int main() {
 
         // Update rotation
         rotationAngle += rotationVelocity * deltaTime;
-        if (rotationAngle >= 360.0F) {
+        if (rotationAngle >= 360.0F)
+        {
             rotationAngle -= 360.0F;
         }
 
@@ -342,7 +369,8 @@ int main() {
         // Set uniforms
         glm::mat4 model = glm::mat4(1.0F);
         glm::vec3 axis(rotationAxis[0], rotationAxis[1], rotationAxis[2]);
-        if (glm::length(axis) > 0.0F) {
+        if (glm::length(axis) > 0.0F)
+        {
             axis = glm::normalize(axis);
             model = glm::rotate(model, glm::radians(rotationAngle), axis);
         }
@@ -389,8 +417,7 @@ int main() {
         ImGui::Text("FPS: %.1f", static_cast<double>(io.Framerate));
         ImGui::Separator();
         ImGui::SliderFloat3("Rotation Axis", rotationAxis.data(), -1.0F, 1.0F, "%.2f");
-        ImGui::SliderFloat("Rotation Velocity", &rotationVelocity, -180.0F, 180.0F,
-                           "%.1f deg/s");
+        ImGui::SliderFloat("Rotation Velocity", &rotationVelocity, -180.0F, 180.0F, "%.1f deg/s");
         ImGui::ColorEdit3("Cube Color", cubeColor.data());
         ImGui::End();
 
