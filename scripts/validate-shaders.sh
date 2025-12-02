@@ -41,9 +41,9 @@ for shader in $SHADER_FILES; do
     echo -n "Validating $shader... "
 
     # Run glslangValidator
-    # -V for Vulkan SPIR-V (optional, comment out if OpenGL-only)
-    # --target-env opengl for OpenGL target
-    if glslangValidator --target-env opengl "$shader" > /dev/null 2>&1; then
+    # Without --target-env, it validates GLSL syntax without SPIR-V requirements
+    # This is appropriate for OpenGL shaders
+    if glslangValidator "$shader" > /dev/null 2>&1; then
         echo -e "${GREEN}✓${NC}"
         PASSED=$((PASSED + 1))
     else
@@ -51,7 +51,7 @@ for shader in $SHADER_FILES; do
         FAILED=$((FAILED + 1))
         # Show detailed error
         echo -e "${RED}Error details:${NC}"
-        glslangValidator --target-env opengl "$shader" 2>&1 | sed 's/^/  /'
+        glslangValidator "$shader" 2>&1 | sed 's/^/  /'
         echo ""
     fi
 done

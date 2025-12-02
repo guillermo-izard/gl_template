@@ -66,11 +66,10 @@ lcov --add-tracefile build/coverage/coverage-base.info \
      --output-file build/coverage/coverage-total.info \
      --quiet
 
-# Remove third-party library coverage
+# Remove third-party library coverage (but keep our tests and src)
 lcov --remove build/coverage/coverage-total.info \
      '/usr/*' \
-     '*/build/*' \
-     '*/tests/*' \
+     '*/build/*/_deps/*' \
      --output-file build/coverage/coverage-filtered.info \
      --quiet
 
