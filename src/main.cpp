@@ -322,8 +322,9 @@ int main()
     glEnableVertexAttribArray(0);
 
     // Texture coordinate attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-                          reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(
+        1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+        reinterpret_cast<void*>(3 * sizeof(float))); // NOLINT(performance-no-int-to-ptr)
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
@@ -367,7 +368,7 @@ int main()
         glUseProgram(shaderProgram);
 
         // Set uniforms
-        glm::mat4 model = glm::mat4(1.0F);
+        auto model = glm::mat4(1.0F);
         glm::vec3 axis(rotationAxis[0], rotationAxis[1], rotationAxis[2]);
         if (glm::length(axis) > 0.0F)
         {
@@ -375,7 +376,7 @@ int main()
             model = glm::rotate(model, glm::radians(rotationAngle), axis);
         }
 
-        glm::mat4 view = glm::mat4(1.0F);
+        auto view = glm::mat4(1.0F);
         view = glm::translate(view, glm::vec3(0.0F, 0.0F, -3.0F));
 
         int width = 0;
@@ -414,6 +415,7 @@ int main()
                                 ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowSize(ImVec2(280.0F, 200.0F), ImGuiCond_FirstUseEver);
         ImGui::Begin("Controls");
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
         ImGui::Text("FPS: %.1f", static_cast<double>(io.Framerate));
         ImGui::Separator();
         ImGui::SliderFloat3("Rotation Axis", rotationAxis.data(), -1.0F, 1.0F, "%.2f");

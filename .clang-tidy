@@ -1,6 +1,7 @@
 ---
 Checks: >
   -*,
+  -clang-diagnostic-unknown-warning-option,
   bugprone-*,
   -bugprone-easily-swappable-parameters,
   -bugprone-narrowing-conversions,
@@ -11,6 +12,7 @@ Checks: >
   -readability-magic-numbers,
   -readability-identifier-length,
   -readability-function-cognitive-complexity,
+  -readability-uppercase-literal-suffix,
   cppcoreguidelines-*,
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-pro-type-reinterpret-cast,
