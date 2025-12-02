@@ -106,6 +106,28 @@ Or use the VS Code launch configurations which automatically set the correct wor
 
 ## Development
 
+### Local CI Validation
+
+**Run all CI checks before pushing:**
+
+```bash
+./scripts/ci-local.sh
+```
+
+This validates formatting, builds, tests, and static analysis - the same checks that run on GitHub Actions.
+
+**Individual scripts:**
+
+```bash
+./scripts/format-check.sh      # Check code formatting
+./scripts/format-fix.sh        # Auto-format code
+./scripts/build-all.sh         # Build all configurations
+./scripts/test-all.sh          # Run all tests
+./scripts/static-analysis.sh   # Run clang-tidy
+```
+
+See [scripts/README.md](scripts/README.md) for detailed documentation.
+
 ### VS Code
 
 The project includes VS Code configurations for building and debugging:
@@ -114,22 +136,6 @@ The project includes VS Code configurations for building and debugging:
 - **Debug**: `F5` to build and launch with debugger
   - Automatically sets working directory to `data/`
   - Includes configurations for both main app and tests
-
-### Code Formatting
-
-```bash
-# Format all source files
-find src tests -name "*.cpp" -o -name "*.h" | xargs clang-format -i
-
-# Check formatting
-find src tests -name "*.cpp" -o -name "*.h" | xargs clang-format --dry-run --Werror
-```
-
-### Static Analysis
-
-```bash
-# Run clang-tidy
-find src -name "*.cpp" | xargs clang-tidy -p build/debug
 ```
 
 ### Sanitizers
