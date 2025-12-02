@@ -21,12 +21,7 @@ set_project_warnings(vibegl)
 enable_sanitizers(vibegl)
 
 # Platform-specific settings
-if(WIN32)
-    # Hide console window on Windows in Release builds
-    if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        set_target_properties(vibegl PROPERTIES WIN32_EXECUTABLE TRUE)
-    endif()
-elseif(UNIX AND NOT APPLE)
+if(UNIX AND NOT APPLE)
     # Link required libraries on Linux
     find_package(X11 REQUIRED)
     target_link_libraries(vibegl PRIVATE
