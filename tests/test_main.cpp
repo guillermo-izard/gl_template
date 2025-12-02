@@ -2,12 +2,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <doctest/doctest.h>
-
 #include <array>
 #include <memory>
 #include <string>
 #include <vector>
+
+#include <doctest/doctest.h>
 
 TEST_CASE("GLM vector operations")
 {
@@ -160,7 +160,8 @@ TEST_CASE("Memory operations with sanitizers")
         for (int i = 0; i < 100; i++)
         {
             matrices[i] = glm::mat4(1.0F);
-            matrices[i] = glm::rotate(matrices[i], glm::radians(float(i)), glm::vec3(1.0F, 0.0F, 0.0F));
+            matrices[i] =
+                glm::rotate(matrices[i], glm::radians(float(i)), glm::vec3(1.0F, 0.0F, 0.0F));
             matrices[i] = glm::translate(matrices[i], glm::vec3(float(i), float(i), float(i)));
             matrices[i] = glm::scale(matrices[i], glm::vec3(2.0F));
         }
