@@ -104,6 +104,19 @@ $RECYCLE.BIN/
 # Sanitizer output
 *.dSYM/
 
+# Coverage files
+*.gcov
+*.gcda
+*.gcno
+*.info
+coverage-report/
+
+# Profiling files
+massif.out*
+callgrind.out*
+cachegrind.out*
+profiling/
+
 # Core dumps
 core
 core.*

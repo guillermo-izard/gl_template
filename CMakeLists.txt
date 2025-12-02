@@ -22,12 +22,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Options
 option(ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
+option(ENABLE_COVERAGE "Enable code coverage instrumentation" OFF)
 option(BUILD_TESTS "Build unit tests" ON)
 
 # Include CMake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 include(CompilerWarnings)
 include(Sanitizers)
+include(Coverage)
 include(Dependencies)
 
 # Add subdirectories
@@ -45,5 +47,6 @@ message(STATUS "  C++ Standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "  Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "  Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "  Sanitizers: ${ENABLE_SANITIZERS}")
+message(STATUS "  Coverage: ${ENABLE_COVERAGE}")
 message(STATUS "  Build Tests: ${BUILD_TESTS}")
 message(STATUS "")

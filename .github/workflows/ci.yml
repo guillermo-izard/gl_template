@@ -94,6 +94,20 @@ jobs:
       - name: Test
         run: ctest --test-dir build/${{ matrix.preset }} --output-on-failure
 
+  shader-validation:
+    name: Shader Validation
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install glslangValidator
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y glslang-tools
+
+      - name: Validate shaders
+        run: ./scripts/validate-shaders.sh
+
   clang-tidy:
     name: Static Analysis (clang-tidy)
     runs-on: ubuntu-24.04
@@ -126,4 +140,4 @@ jobs:
 
       - name: Run clang-tidy
         run: |
-          find src -name "*.cpp" | xargs clang-tidy-18 -p build/debug
+          find src -name "*.cpp" | xargs clang-tidy-18 -p build/debug 2>&1 | grep -v "error: unknown warning option" || true

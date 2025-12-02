@@ -72,6 +72,44 @@ This compiles and runs small programs that:
 
 If all three detect their respective bugs, sanitizers are working correctly.
 
+### `validate-shaders.sh`
+Validate all GLSL shaders for syntax and compilation errors
+
+```bash
+./scripts/validate-shaders.sh
+```
+
+Uses `glslangValidator` to check all shaders in `data/shaders/` for errors before runtime.
+
+**Requires:** `glslang-tools` package
+
+### `generate-coverage.sh`
+Generate code coverage report with HTML visualization
+
+```bash
+./scripts/generate-coverage.sh
+```
+
+Builds with coverage instrumentation, runs tests, and generates an HTML report showing which lines of code are tested.
+
+**Requires:** `lcov` package
+**Output:** `build/coverage/coverage-report/index.html`
+
+### `profile-memory.sh`
+Profile memory usage and detect memory errors with Valgrind
+
+```bash
+./scripts/profile-memory.sh [--mode MODE]
+```
+
+**Modes:**
+- `memcheck` - Detect memory leaks and errors (default)
+- `massif` - Heap profiling (memory usage over time)
+- `both` - Run both tools
+
+**Requires:** `valgrind` package
+**Output:** `build/debug/profiling/`
+
 ---
 
 ## Recommended Workflow
