@@ -28,7 +28,7 @@ TEST_CASE("GLM vector operations")
         glm::vec3 b(0.0F, 1.0F, 0.0F);
         float result = glm::dot(a, b);
 
-        CHECK(result == doctest::Approx(0.0));
+        CHECK(static_cast<double>(result) == doctest::Approx(0.0));
     }
 
     SUBCASE("Vector cross product")
