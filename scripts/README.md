@@ -58,6 +58,20 @@ Run clang-tidy static analysis
 ./scripts/static-analysis.sh
 ```
 
+### `test-sanitizers-manual.sh`
+Manually verify sanitizers are working by intentionally triggering them
+
+```bash
+./scripts/test-sanitizers-manual.sh
+```
+
+This compiles and runs small programs that:
+- Trigger AddressSanitizer (buffer overflow)
+- Trigger UndefinedBehaviorSanitizer (signed overflow)
+- Trigger LeakSanitizer (memory leak)
+
+If all three detect their respective bugs, sanitizers are working correctly.
+
 ---
 
 ## Recommended Workflow

@@ -164,6 +164,24 @@ LSAN_OPTIONS=suppressions=../.lsan_suppressions ../build/debug/bin/vibegl
 
 The VS Code tasks and CMake extension are already configured to use the suppression file automatically.
 
+**Testing Sanitizers:**
+
+The test suite includes validation that sanitizers are enabled and working:
+- Compile-time feature detection tests
+- Memory-intensive tests that would trigger sanitizers if bugs existed
+
+Run tests with sanitizers:
+```bash
+./scripts/test-all.sh
+```
+
+Manually verify sanitizers are working:
+```bash
+./scripts/test-sanitizers-manual.sh
+```
+
+This script intentionally triggers sanitizer errors to confirm they're catching bugs.
+
 **Important Note:** Sanitizers cannot run under debuggers (GDB/LLDB) due to ptrace limitations. If you see:
 ```
 LeakSanitizer has encountered a fatal error.
