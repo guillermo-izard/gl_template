@@ -12,9 +12,10 @@ A modern OpenGL graphics programming template with C++23, featuring a clean CMak
 - **spdlog** for fast, structured logging
 - **stb_image** for texture loading
 - **Comprehensive testing** with doctest and sanitizers
-- **CMake Presets** for easy build configuration
+- **CMake Presets** for easy build configuration (debug, release, sanitizers, coverage)
 - **GitHub Actions CI/CD** with multiple compiler support
-- **Code quality tools**: clang-format, clang-tidy
+- **Code quality tools**: clang-format, clang-tidy, shader validation
+- **Development tools**: code coverage, memory profiling (Valgrind)
 
 ## Demo Application
 
@@ -42,12 +43,21 @@ The template includes a fully functional demo that renders a spinning textured c
 ### Linux
 
 ```bash
-# Ubuntu/Debian
+# Ubuntu/Debian - Base requirements
 sudo apt-get install ninja-build libxrandr-dev libxinerama-dev \
                      libxcursor-dev libxi-dev libgl1-mesa-dev
 
-# Arch Linux
+# Arch Linux - Base requirements
 sudo pacman -S ninja libxrandr libxinerama libxcursor libxi mesa
+```
+
+**Optional development tools:**
+```bash
+# Ubuntu/Debian
+sudo apt-get install clang-format-18 clang-tidy-18 glslang-tools lcov valgrind
+
+# Arch Linux
+sudo pacman -S clang glslang lcov valgrind
 ```
 
 ### Windows
@@ -78,6 +88,7 @@ ctest --test-dir build/debug --output-on-failure
 - **debug**: Debug build with symbols and no optimizations
 - **release**: Release build with optimizations
 - **sanitizers**: Debug build with AddressSanitizer and UndefinedBehaviorSanitizer
+- **coverage**: Debug build with code coverage instrumentation
 
 ### Manual Configuration
 
@@ -119,14 +130,39 @@ This validates formatting, builds, tests, and static analysis - the same checks 
 **Individual scripts:**
 
 ```bash
-./scripts/format-check.sh      # Check code formatting
-./scripts/format-fix.sh        # Auto-format code
-./scripts/build-all.sh         # Build all configurations
-./scripts/test-all.sh          # Run all tests
-./scripts/static-analysis.sh   # Run clang-tidy
+./scripts/format-check.sh         # Check code formatting
+./scripts/format-fix.sh           # Auto-format code
+./scripts/build-all.sh            # Build all configurations
+./scripts/test-all.sh             # Run all tests
+./scripts/static-analysis.sh      # Run clang-tidy
+./scripts/validate-shaders.sh     # Validate GLSL shaders
+./scripts/generate-coverage.sh    # Generate code coverage report
+./scripts/profile-memory.sh       # Run Valgrind memory profiling
 ```
 
 See [scripts/README.md](scripts/README.md) for detailed documentation.
+
+### Quality Assurance Tools
+
+**Shader Validation:**
+```bash
+./scripts/validate-shaders.sh
+```
+Validates all GLSL shaders before runtime using glslangValidator.
+
+**Code Coverage:**
+```bash
+./scripts/generate-coverage.sh
+```
+Generates HTML coverage report showing which code is tested. Open `build/coverage/coverage-report/index.html` to view results.
+
+**Memory Profiling:**
+```bash
+./scripts/profile-memory.sh              # Memory error detection
+./scripts/profile-memory.sh --mode massif  # Heap profiling
+./scripts/profile-memory.sh --mode both    # Both tools
+```
+Uses Valgrind to detect memory leaks and profile heap usage.
 
 ### VS Code
 

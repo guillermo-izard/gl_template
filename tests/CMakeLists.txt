@@ -13,9 +13,14 @@ target_include_directories(vibegl_tests SYSTEM PRIVATE ${glm_SOURCE_DIR})
 # Set compiler warnings
 set_project_warnings(vibegl_tests)
 
-# Force enable sanitizers for tests
-set(ENABLE_SANITIZERS ON CACHE BOOL "" FORCE)
-enable_sanitizers(vibegl_tests)
+# Force enable sanitizers for tests (unless coverage is enabled)
+if(NOT ENABLE_COVERAGE)
+    set(ENABLE_SANITIZERS ON CACHE BOOL "" FORCE)
+    enable_sanitizers(vibegl_tests)
+else()
+    # Enable coverage for tests
+    enable_coverage(vibegl_tests)
+endif()
 
 # Add tests to CTest
 add_test(NAME vibegl_tests COMMAND vibegl_tests)

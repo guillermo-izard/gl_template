@@ -43,6 +43,15 @@
       "cacheVariables": {
         "ENABLE_SANITIZERS": "ON"
       }
+    },
+    {
+      "name": "coverage",
+      "displayName": "Coverage",
+      "description": "Debug build with code coverage instrumentation",
+      "inherits": "debug",
+      "cacheVariables": {
+        "ENABLE_COVERAGE": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -60,6 +69,11 @@
       "name": "sanitizers",
       "configurePreset": "sanitizers",
       "displayName": "Sanitizers Build"
+    },
+    {
+      "name": "coverage",
+      "configurePreset": "coverage",
+      "displayName": "Coverage Build"
     }
   ],
   "testPresets": [
@@ -73,6 +87,13 @@
     {
       "name": "sanitizers",
       "configurePreset": "sanitizers",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "coverage",
+      "configurePreset": "coverage",
       "output": {
         "outputOnFailure": true
       }
