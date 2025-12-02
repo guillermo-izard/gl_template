@@ -67,6 +67,12 @@ if ! command -v valgrind &> /dev/null; then
     exit 1
 fi
 
+# Note: Valgrind conflicts with AddressSanitizer
+# The test executable has sanitizers forced ON, which will cause Valgrind warnings
+# For clean Valgrind output, profile the main application instead:
+#   ./scripts/profile-memory.sh -- (run the app with appropriate args)
+# Or temporarily disable sanitizers in tests/CMakeLists.txt
+
 # Ensure debug build exists
 if [ ! -d "build/debug" ]; then
     echo -e "${BLUE}Configuring debug build...${NC}"
@@ -74,9 +80,13 @@ if [ ! -d "build/debug" ]; then
     cmake --build build/debug --parallel
 fi
 
-# Default to test executable
+# Default to test executable (note: has sanitizers enabled, will warn)
 if [ -z "$EXECUTABLE" ]; then
     EXECUTABLE="./build/debug/bin/vibegl_tests"
+    echo -e "${YELLOW}Note: Test executable has sanitizers enabled${NC}"
+    echo -e "${YELLOW}Valgrind will show warnings but still detect leaks${NC}"
+    echo -e "${YELLOW}For clean output, profile the main app or disable sanitizers${NC}"
+    echo ""
 fi
 
 # Check if executable exists
