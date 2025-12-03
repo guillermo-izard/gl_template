@@ -26,7 +26,7 @@ print_status() {
 }
 
 # Check 1: Code Formatting
-echo -e "${YELLOW}[1/4] Checking code formatting...${NC}"
+echo -e "${YELLOW}[1/5] Checking code formatting...${NC}"
 CLANG_FORMAT=$(command -v clang-format-18 || command -v clang-format)
 if [ -n "$CLANG_FORMAT" ]; then
     find src tests -name "*.cpp" -o -name "*.h" | xargs "$CLANG_FORMAT" --dry-run --Werror 2>&1
@@ -37,8 +37,19 @@ fi
 
 echo ""
 
-# Check 2: Build with sanitizers
-echo -e "${YELLOW}[2/4] Building with sanitizers...${NC}"
+# Check 2: Shader Validation
+echo -e "${YELLOW}[2/5] Validating shaders...${NC}"
+if command -v glslangValidator &> /dev/null; then
+    ./scripts/validate-shaders.sh > /dev/null 2>&1
+    print_status $? "Shader validation"
+else
+    echo -e "${YELLOW}⚠ glslangValidator not found, skipping shader validation${NC}"
+fi
+
+echo ""
+
+# Check 3: Build with sanitizers
+echo -e "${YELLOW}[3/5] Building with sanitizers...${NC}"
 if [ ! -d "build/sanitizers" ]; then
     cmake --preset sanitizers > /dev/null
 fi
@@ -47,15 +58,15 @@ print_status $? "Build with sanitizers"
 
 echo ""
 
-# Check 3: Run tests
-echo -e "${YELLOW}[3/4] Running tests...${NC}"
+# Check 4: Run tests
+echo -e "${YELLOW}[4/5] Running tests...${NC}"
 ctest --test-dir build/sanitizers --output-on-failure
 print_status $? "Tests"
 
 echo ""
 
-# Check 4: Static analysis (clang-tidy)
-echo -e "${YELLOW}[4/4] Running static analysis (clang-tidy)...${NC}"
+# Check 5: Static analysis (clang-tidy)
+echo -e "${YELLOW}[5/5] Running static analysis (clang-tidy)...${NC}"
 CLANG_TIDY=$(command -v clang-tidy-18 || command -v clang-tidy)
 if [ -n "$CLANG_TIDY" ]; then
     if [ ! -d "build/debug" ]; then
