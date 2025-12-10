@@ -141,3 +141,34 @@ jobs:
       - name: Run clang-tidy
         run: |
           find src -name "*.cpp" | xargs clang-tidy-18 -p build/debug 2>&1 | grep -v "error: unknown warning option" || true
+
+  emscripten:
+    name: WebAssembly (Emscripten)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 'latest'
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.28.x'
+
+      - name: Configure
+        run: |
+          emcmake cmake --preset emscripten
+
+      - name: Build
+        run: cmake --build build/emscripten --parallel
+
+      - name: Verify output files
+        run: |
+          ls -la build/emscripten/bin/
+          test -f build/emscripten/bin/vibegl.html
+          test -f build/emscripten/bin/vibegl.js
+          test -f build/emscripten/bin/vibegl.wasm
+          test -f build/emscripten/bin/vibegl.data
