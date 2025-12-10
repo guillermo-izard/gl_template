@@ -117,13 +117,13 @@ callgrind.out*
 cachegrind.out*
 profiling/
 
-# Core dumps
-core
-core.*
+# Core dumps (full path to avoid matching src/core/)
+/core
+/core.*
 
 # Don't ignore data folder but ignore its contents except shaders and textures
-!data/
+data/*
 !data/shaders/
 !data/textures/
-data/*
 !data/.gitkeep
+!data/.gitignore

@@ -7,32 +7,44 @@ set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
 # ============================================================================
 # GLFW - Windowing and input
 # ============================================================================
-message(STATUS "Fetching GLFW...")
-FetchContent_Declare(
-    glfw
-    GIT_REPOSITORY https://github.com/glfw/glfw.git
-    GIT_TAG        3.4
-    GIT_SHALLOW    TRUE
-)
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_X11 ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(glfw)
+if(NOT EMSCRIPTEN)
+    message(STATUS "Fetching GLFW...")
+    FetchContent_Declare(
+        glfw
+        GIT_REPOSITORY https://github.com/glfw/glfw.git
+        GIT_TAG        3.4
+        GIT_SHALLOW    TRUE
+    )
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_X11 ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(glfw)
+else()
+    # Emscripten provides GLFW via -sUSE_GLFW=3
+    message(STATUS "Using Emscripten's built-in GLFW")
+    add_library(glfw INTERFACE)
+endif()
 
 # ============================================================================
-# glad - OpenGL loader
+# glad - OpenGL loader (not needed for Emscripten)
 # ============================================================================
-message(STATUS "Fetching glad...")
-FetchContent_Declare(
-    glad
-    GIT_REPOSITORY https://github.com/Dav1dde/glad.git
-    GIT_TAG        v0.1.36
-    GIT_SHALLOW    TRUE
-)
-FetchContent_MakeAvailable(glad)
+if(NOT EMSCRIPTEN)
+    message(STATUS "Fetching glad...")
+    FetchContent_Declare(
+        glad
+        GIT_REPOSITORY https://github.com/Dav1dde/glad.git
+        GIT_TAG        v0.1.36
+        GIT_SHALLOW    TRUE
+    )
+    FetchContent_MakeAvailable(glad)
+else()
+    # Emscripten provides OpenGL ES directly
+    message(STATUS "Using Emscripten's built-in OpenGL ES")
+    add_library(glad INTERFACE)
+endif()
 
 # ============================================================================
 # GLM - Mathematics library
@@ -80,18 +92,50 @@ target_include_directories(imgui SYSTEM PUBLIC
     ${imgui_SOURCE_DIR}
     ${imgui_SOURCE_DIR}/backends
 )
-target_link_libraries(imgui PUBLIC glfw glad)
+if(NOT EMSCRIPTEN)
+    target_link_libraries(imgui PUBLIC glfw glad)
+else()
+    # Emscripten: link only interface targets
+    target_link_libraries(imgui PUBLIC glfw)
+endif()
+
+# ============================================================================
+# fmt - Formatting library (required for spdlog with Emscripten)
+# ============================================================================
+if(EMSCRIPTEN)
+    message(STATUS "Fetching fmt (external for Emscripten)...")
+    FetchContent_Declare(
+        fmt
+        GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+        GIT_TAG        11.1.4
+        GIT_SHALLOW    TRUE
+    )
+    set(FMT_INSTALL OFF CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(fmt)
+    set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "" FORCE)
+endif()
 
 # ============================================================================
 # spdlog - Fast logging library
 # ============================================================================
 message(STATUS "Fetching spdlog...")
-FetchContent_Declare(
-    spdlog
-    GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG        v1.14.1
-    GIT_SHALLOW    TRUE
-)
+if(EMSCRIPTEN)
+    # Use spdlog 1.15.1 for Emscripten (proper fmt 11 support)
+    FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG        v1.15.1
+        GIT_SHALLOW    TRUE
+    )
+else()
+    # Use spdlog 1.14.1 for native builds (bundled fmt)
+    FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG        v1.14.1
+        GIT_SHALLOW    TRUE
+    )
+endif()
 set(SPDLOG_BUILD_EXAMPLE OFF CACHE BOOL "" FORCE)
 set(SPDLOG_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(spdlog)
