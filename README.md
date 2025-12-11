@@ -16,10 +16,11 @@ A modern OpenGL graphics programming template with C++23, featuring a clean CMak
 - **GitHub Actions CI/CD** with multiple compiler support
 - **Code quality tools**: clang-format, clang-tidy, shader validation
 - **Development tools**: code coverage, memory profiling (Valgrind)
+- **API Documentation** with hdoc, automatically generated and deployed
 
-## Demo Application
+## Demo & Documentation
 
-**[Try the live WebAssembly demo!](https://kunst.github.io/vibegl/)** (Automatically deployed from master)
+**[Try the live WebAssembly demo!](https://kunst.github.io/vibegl/)** | **[Browse API Documentation](https://kunst.github.io/vibegl/docs/)**
 
 The template includes a fully functional demo that renders a spinning textured cube with interactive controls:
 
@@ -155,6 +156,46 @@ cd data
 ```
 
 Or use the VS Code launch configurations which automatically set the correct working directory.
+
+## Generating Documentation
+
+VibeGL uses [hdoc](https://hdoc.io/) to generate API documentation with modern, searchable output.
+
+### Online Documentation
+
+**[Browse the latest API documentation](https://kunst.github.io/vibegl/docs/)** - automatically generated and deployed on every push to master.
+
+### Local Documentation Generation
+
+**Prerequisites:**
+- Install hdoc from [GitHub releases](https://github.com/hdoc/hdoc/releases) (Linux binary available)
+- Or build from source (requires LLVM/Clang, Meson)
+
+**Generate docs:**
+```bash
+# Configure and build project first
+cmake --preset debug
+cmake --build build/debug
+
+# Generate documentation
+cmake --build build/debug --target docs
+# Or run hdoc directly
+hdoc --verbose
+
+# View locally
+cd hdoc-output
+python3 -m http.server 8000
+# Open http://localhost:8000
+```
+
+The documentation is generated from specially formatted comments in the source code (Doxygen-style):
+```cpp
+/// @brief Brief description of the function
+/// @param paramName Description of the parameter
+/// @returns Description of return value
+```
+
+Documentation configuration is in `.hdoc.toml`.
 
 ## Development
 
