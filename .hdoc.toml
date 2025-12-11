@@ -1,0 +1,30 @@
+[project]
+name = "VibeGL"
+version = "1.0.0"
+git_repo_url = "https://github.com/guillermo-izard/gl_template/"
+git_default_branch = "master"
+num_threads = 0  # Use all available threads
+
+[paths]
+compile_commands = "build/debug/compile_commands.json"
+output_dir = "hdoc-output"
+
+[includes]
+use_system_includes = true
+
+[ignore]
+ignore_private_members = false
+paths = [
+  "/tests/",
+  "/build/",
+  "/external/",
+  "/cmake/",
+  "/.github/",
+]
+
+[pages]
+homepage = "README.md"
+
+[debug]
+limit_num_indexed_files = 0
+dump_json_payload = false

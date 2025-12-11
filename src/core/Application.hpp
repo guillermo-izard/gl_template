@@ -10,10 +10,10 @@ namespace vibegl {
 
 /// @brief Configuration for creating an Application window
 struct WindowConfig {
-    std::string title = "VibeGL";
-    int width = 1280;
-    int height = 720;
-    bool vsync = true;
+    std::string title = "VibeGL";  ///< Window title displayed in title bar
+    int width = 1280;               ///< Initial window width in pixels
+    int height = 720;               ///< Initial window height in pixels
+    bool vsync = true;              ///< Enable vertical synchronization
 };
 
 /// @brief Base class for applications with platform-abstracted main loop
@@ -40,6 +40,7 @@ struct WindowConfig {
 class Application {
 public:
     /// @brief Construct application with given window configuration
+    /// @param config Window configuration (title, dimensions, vsync)
     explicit Application(const WindowConfig& config = {});
 
     /// @brief Virtual destructor for proper cleanup in derived classes
@@ -70,9 +71,20 @@ protected:
     virtual bool shouldQuit() const;
 
     // Accessors for derived classes
+    /// @brief Get the underlying GLFW window handle
+    /// @returns Pointer to GLFW window
     GLFWwindow* getWindow() const { return window_; }
+
+    /// @brief Get current window width
+    /// @returns Window width in pixels
     int getWindowWidth() const;
+
+    /// @brief Get current window height
+    /// @returns Window height in pixels
     int getWindowHeight() const;
+
+    /// @brief Get window aspect ratio
+    /// @returns Width divided by height
     float getAspectRatio() const;
 
     /// @brief Swap buffers and poll events (call at end of onTick)
@@ -97,9 +109,10 @@ private:
     /// @brief Static callback for Emscripten main loop
     static void emscriptenMainLoop(void* arg);
 
-    GLFWwindow* window_ = nullptr;
-    float lastFrameTime_ = 0.0f;
-    bool initialized_ = false;
+    GLFWwindow* window_ = nullptr;  ///< GLFW window handle
+    float lastFrameTime_ = 0.0f;    ///< Time of last frame for delta calculation
+    bool initialized_ = false;      ///< Whether initialization completed successfully
+
 };
 
 } // namespace vibegl

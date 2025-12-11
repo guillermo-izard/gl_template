@@ -17,7 +17,7 @@ public:
     /// @brief Load a texture from an image file
     /// @param filepath Path to the image file
     /// @param flipVertically Whether to flip the image vertically (default: true)
-    /// @return OpenGL texture ID, or 0 on failure
+    /// @returns OpenGL texture ID, or 0 on failure
     static GLuint loadTexture(const std::string& filepath, bool flipVertically = true);
 
     /// @brief Delete a texture
