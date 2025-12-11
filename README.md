@@ -5,8 +5,8 @@ A modern OpenGL graphics programming template with C++23, featuring a clean CMak
 ## Features
 
 - **Modern C++23** with strict compiler warnings and static analysis
-- **Cross-platform** support for Windows and Linux
-- **OpenGL 4.6 Core Profile** with GLFW and GLAD2
+- **Cross-platform** support for Windows, Linux, and **Web (WebAssembly)**
+- **OpenGL 4.6 Core Profile** (desktop) / **WebGL 2.0** (web) with GLFW and GLAD2
 - **Dear ImGui** with docking support for interactive UI
 - **GLM** for mathematics operations
 - **spdlog** for fast, structured logging
@@ -89,6 +89,41 @@ ctest --test-dir build/debug --output-on-failure
 - **release**: Release build with optimizations
 - **sanitizers**: Debug build with AddressSanitizer and UndefinedBehaviorSanitizer
 - **coverage**: Debug build with code coverage instrumentation
+- **emscripten**: WebAssembly build for browsers
+
+### Web Build (Emscripten)
+
+Build for web browsers using WebAssembly:
+
+**Prerequisites:**
+- [Emscripten SDK](https://emscripten.org/docs/getting_started/downloads.html)
+
+**Building:**
+```bash
+# Activate Emscripten environment
+source /path/to/emsdk/emsdk_env.sh
+
+# Build (with optional local server)
+./scripts/build-web.sh           # Build only
+./scripts/build-web.sh --serve   # Build and serve on port 8080
+./scripts/build-web.sh --serve 3000  # Build and serve on custom port
+```
+
+**Output files:**
+```
+build/emscripten/bin/
+├── vibegl.html   # Main HTML page
+├── vibegl.js     # JavaScript glue code
+├── vibegl.wasm   # WebAssembly binary
+└── vibegl.data   # Preloaded assets (shaders, textures)
+```
+
+**Manual serving:**
+```bash
+cd build/emscripten/bin
+python3 -m http.server 8080
+# Open http://localhost:8080/vibegl.html
+```
 
 ### Manual Configuration
 
@@ -240,14 +275,24 @@ vibegl/
 │   ├── CompilerWarnings.cmake # Compiler-specific warnings
 │   └── Sanitizers.cmake      # Sanitizer configuration
 ├── src/                 # Application source code
-│   ├── main.cpp
+│   ├── core/           # Platform abstractions
+│   │   ├── Application.hpp/cpp  # Main loop abstraction
+│   │   ├── GLIncludes.hpp       # Platform-specific GL headers
+│   │   └── Platform.hpp         # Compile-time platform detection
+│   ├── rendering/      # Graphics utilities
+│   │   ├── ShaderManager.hpp/cpp   # Shader loading
+│   │   └── TextureLoader.hpp/cpp   # Texture loading
+│   ├── VibeGLApp.hpp/cpp  # Demo application
+│   ├── main.cpp           # Entry point
 │   └── CMakeLists.txt
 ├── tests/               # Unit tests
 │   ├── test_main.cpp
 │   └── CMakeLists.txt
 ├── data/                # Runtime assets
-│   ├── shaders/        # GLSL shaders
+│   ├── shaders/        # GLSL shaders (*_gl46 for desktop, *_es3 for web)
 │   └── textures/       # Texture files
+├── scripts/             # Build and development scripts
+│   └── build-web.sh    # Emscripten build script
 ├── CMakeLists.txt      # Root CMake configuration
 └── CMakePresets.json   # Build presets
 ```
@@ -268,10 +313,11 @@ All dependencies are automatically fetched and built by CMake:
 
 GitHub Actions automatically:
 
-- Builds on Linux (GCC, Clang) and Windows (MSVC)
+- Builds on Linux (GCC, Clang), Windows (MSVC), and **Web (Emscripten)**
 - Runs all tests with sanitizers enabled
 - Checks code formatting with clang-format
 - Performs static analysis with clang-tidy
+- Validates GLSL shaders
 
 ## Using as a Template
 

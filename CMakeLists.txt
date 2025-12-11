@@ -20,6 +20,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Export compile commands for clang-tidy
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Enable Link-Time Optimization for Release builds
+include(CheckIPOSupported)
+check_ipo_supported(RESULT lto_supported OUTPUT lto_error)
+if(lto_supported)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
+else()
+    message(STATUS "LTO not supported: ${lto_error}")
+endif()
+
 # Options
 option(ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
 option(ENABLE_COVERAGE "Enable code coverage instrumentation" OFF)
@@ -49,4 +58,5 @@ message(STATUS "  Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSIO
 message(STATUS "  Sanitizers: ${ENABLE_SANITIZERS}")
 message(STATUS "  Coverage: ${ENABLE_COVERAGE}")
 message(STATUS "  Build Tests: ${BUILD_TESTS}")
+message(STATUS "  LTO (Release): ${lto_supported}")
 message(STATUS "")
