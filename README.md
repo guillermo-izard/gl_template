@@ -19,6 +19,8 @@ A modern OpenGL graphics programming template with C++23, featuring a clean CMak
 
 ## Demo Application
 
+**[Try the live WebAssembly demo!](https://kunst.github.io/vibegl/)** (Automatically deployed from master)
+
 The template includes a fully functional demo that renders a spinning textured cube with interactive controls:
 
 - Textured cube with customizable rotation
@@ -124,6 +126,10 @@ cd build/emscripten/bin
 python3 -m http.server 8080
 # Open http://localhost:8080/vibegl.html
 ```
+
+**Automatic deployment:**
+Every push to `master` automatically builds and deploys to GitHub Pages at:
+https://kunst.github.io/vibegl/
 
 ### Manual Configuration
 
