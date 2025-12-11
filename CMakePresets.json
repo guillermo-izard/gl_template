@@ -52,6 +52,20 @@
       "cacheVariables": {
         "ENABLE_COVERAGE": "ON"
       }
+    },
+    {
+      "name": "emscripten",
+      "displayName": "Emscripten (WebAssembly)",
+      "description": "Build for web browsers using Emscripten",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/emscripten",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+        "CMAKE_CXX_STANDARD": "20",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "BUILD_TESTS": "OFF"
+      }
     }
   ],
   "buildPresets": [
@@ -74,6 +88,11 @@
       "name": "coverage",
       "configurePreset": "coverage",
       "displayName": "Coverage Build"
+    },
+    {
+      "name": "emscripten",
+      "configurePreset": "emscripten",
+      "displayName": "Emscripten Build"
     }
   ],
   "testPresets": [
