@@ -53,6 +53,9 @@ _deps/
 *.swo
 *~
 
+# ImGui
+imgui.ini
+
 # IDE - Visual Studio Code
 .vscode/*.log
 
