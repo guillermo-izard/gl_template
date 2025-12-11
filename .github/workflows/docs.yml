@@ -54,12 +54,19 @@ jobs:
         run: |
           cmake --build build/debug --parallel
 
-      - name: Download and install hdoc
+      - name: Build and install hdoc
         run: |
-          # Download hdoc binary from GitHub releases
-          wget https://github.com/hdoc/hdoc/releases/download/1.4.1/hdoc -O hdoc
-          chmod +x hdoc
-          sudo mv hdoc /usr/local/bin/
+          # Install hdoc build dependencies
+          sudo apt-get install -y meson libclang-18-dev lld-18 xxd
+
+          # Clone and build hdoc
+          git clone --depth 1 --branch 1.4.1 https://github.com/hdoc/hdoc.git hdoc-src
+          cd hdoc-src
+          meson setup build
+          ninja -C build
+          sudo cp build/hdoc /usr/local/bin/
+          cd ..
+          rm -rf hdoc-src
 
       - name: Generate documentation with hdoc
         run: |
