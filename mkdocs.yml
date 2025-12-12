@@ -3,7 +3,7 @@
 
 site_name: VibeGL Documentation
 site_description: Modern OpenGL graphics programming template with C++23
-site_url: https://kunst.github.io/vibegl/docs/
+site_url: https://guillermo-izard.github.io/gl_template/docs/
 repo_url: https://github.com/guillermo-izard/gl_template
 repo_name: guillermo-izard/gl_template
 

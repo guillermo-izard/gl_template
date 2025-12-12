@@ -20,7 +20,7 @@ A modern OpenGL graphics programming template with C++23, featuring a clean CMak
 
 ## Demo & Documentation
 
-**[Try the live WebAssembly demo!](https://kunst.github.io/vibegl/)** | **[Browse API Documentation](https://kunst.github.io/vibegl/docs/)**
+**[Try the live WebAssembly demo!](https://guillermo-izard.github.io/gl_template/)** | **[Browse API Documentation](https://guillermo-izard.github.io/gl_template/docs/)**
 
 The template includes a fully functional demo that renders a spinning textured cube with interactive controls:
 
@@ -163,7 +163,7 @@ VibeGL uses [Doxide](https://doxide.org/) to generate API documentation with mod
 
 ### Online Documentation
 
-**[Browse the latest API documentation](https://kunst.github.io/vibegl/docs/)** - automatically generated and deployed on every push to master.
+**[Browse the latest API documentation](https://guillermo-izard.github.io/gl_template/docs/)** - automatically generated and deployed on every push to master.
 
 ### Local Documentation Generation
 
