@@ -39,20 +39,16 @@ public:
 
 private:
     /// @brief Read entire file contents into string
-    /// @param path Path to file to read
-    /// @returns File contents as string
     static std::string readFile(const std::string& path);
 
     /// @brief Compile a shader from source
     /// @param type GL_VERTEX_SHADER or GL_FRAGMENT_SHADER
     /// @param source GLSL source code
-    /// @returns Shader ID, or 0 on failure
+    /// @return Shader ID, or 0 on failure
     static GLuint compileShader(GLenum type, const std::string& source);
 
     /// @brief Link vertex and fragment shaders into program
-    /// @param vertShader Compiled vertex shader ID
-    /// @param fragShader Compiled fragment shader ID
-    /// @returns Program ID, or 0 on failure
+    /// @return Program ID, or 0 on failure
     static GLuint linkProgram(GLuint vertShader, GLuint fragShader);
 };
 

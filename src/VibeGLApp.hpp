@@ -21,38 +21,27 @@ public:
     VibeGLApp& operator=(VibeGLApp&&) = delete;
 
 protected:
-    /// @brief Initialize OpenGL resources (shaders, textures, geometry)
     void onInit() override;
-
-    /// @brief Update and render the rotating cube each frame
-    /// @param deltaTime Time elapsed since last frame in seconds
     void onTick(float deltaTime) override;
-
-    /// @brief Clean up OpenGL resources
     void onShutdown() override;
 
 private:
-    /// @brief Set up cube vertex and index buffers
     void setupCubeGeometry();
-
-    /// @brief Render the textured cube with current transform
     void renderCube();
-
-    /// @brief Render ImGui control panel
     void renderUI();
 
     // OpenGL resources
-    GLuint shaderProgram_ = 0;     ///< Compiled shader program
-    GLuint texture_ = 0;            ///< Loaded texture
-    GLuint vao_ = 0;                ///< Vertex Array Object
-    GLuint vbo_ = 0;                ///< Vertex Buffer Object
-    GLuint ebo_ = 0;                ///< Element Buffer Object
+    GLuint shaderProgram_ = 0;
+    GLuint texture_ = 0;
+    GLuint vao_ = 0;
+    GLuint vbo_ = 0;
+    GLuint ebo_ = 0;
 
     // Animation state
-    float rotationAngle_ = 0.0f;                           ///< Current rotation angle in degrees
-    float rotationVelocity_ = 45.0f;                       ///< Rotation speed in degrees per second
-    std::array<float, 3> rotationAxis_ = {0.5f, 1.0f, 0.0f};  ///< Rotation axis (X, Y, Z)
-    std::array<float, 3> cubeColor_ = {1.0f, 1.0f, 1.0f};     ///< Cube tint color (RGB)
+    float rotationAngle_ = 0.0f;
+    float rotationVelocity_ = 45.0f;
+    std::array<float, 3> rotationAxis_ = {0.5f, 1.0f, 0.0f};
+    std::array<float, 3> cubeColor_ = {1.0f, 1.0f, 1.0f};
 };
 
 } // namespace vibegl

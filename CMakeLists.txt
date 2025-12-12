@@ -49,24 +49,6 @@ if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-# Documentation target with hdoc
-find_program(HDOC_EXECUTABLE hdoc)
-if(HDOC_EXECUTABLE)
-    add_custom_target(docs
-        COMMAND ${HDOC_EXECUTABLE} --verbose
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMENT "Generating documentation with hdoc..."
-        VERBATIM
-    )
-    set(HDOC_FOUND TRUE)
-    message(STATUS "hdoc found: ${HDOC_EXECUTABLE}")
-    message(STATUS "Run 'cmake --build . --target docs' to generate documentation")
-else()
-    set(HDOC_FOUND FALSE)
-    message(STATUS "hdoc not found - documentation target not available")
-    message(STATUS "Install hdoc from: https://github.com/hdoc/hdoc/releases")
-endif()
-
 # Print configuration summary
 message(STATUS "")
 message(STATUS "VibeGL Configuration:")
@@ -77,5 +59,4 @@ message(STATUS "  Sanitizers: ${ENABLE_SANITIZERS}")
 message(STATUS "  Coverage: ${ENABLE_COVERAGE}")
 message(STATUS "  Build Tests: ${BUILD_TESTS}")
 message(STATUS "  LTO (Release): ${lto_supported}")
-message(STATUS "  Documentation (hdoc): ${HDOC_FOUND}")
 message(STATUS "")
