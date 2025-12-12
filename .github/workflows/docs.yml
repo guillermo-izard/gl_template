@@ -56,8 +56,8 @@ jobs:
 
       - name: Build hdoc with LLVM 18 compatibility patch
         run: |
-          # Install hdoc build dependencies
-          sudo apt-get install -y meson libclang-18-dev llvm-18-dev lld-18 xxd libssl-dev
+          # Install hdoc build dependencies including full clang tooling libraries
+          sudo apt-get install -y meson llvm-18-dev libclang-18-dev libclang-cpp18-dev lld-18 xxd libssl-dev
 
           # Clone hdoc
           git clone --depth 1 --branch 1.4.1 https://github.com/hdoc/hdoc.git hdoc-src
@@ -68,8 +68,10 @@ jobs:
           sed -i 's/llvm::None/std::nullopt/g' src/frontend/Frontend.cpp
           sed -i '1i #include <optional>' src/frontend/Frontend.cpp
 
-          # Configure and build
-          meson setup build --buildtype=release
+          # Configure and build with explicit LLVM 18 paths
+          export LLVM_DIR=/usr/lib/llvm-18
+          export PATH="/usr/lib/llvm-18/bin:$PATH"
+          meson setup build --buildtype=release -Dcpp_args="-I/usr/lib/llvm-18/include" -Dcpp_link_args="-L/usr/lib/llvm-18/lib"
           ninja -C build
 
           # Install
