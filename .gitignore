@@ -56,10 +56,6 @@ _deps/
 # ImGui
 imgui.ini
 
-# Documentation
-hdoc-output/
-docs/site/
-
 # IDE - Visual Studio Code
 .vscode/*.log
 
