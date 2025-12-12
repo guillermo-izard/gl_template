@@ -54,14 +54,32 @@ jobs:
         run: |
           cmake --build build/debug --parallel
 
+      - name: Build hdoc with LLVM 18 compatibility patch
+        run: |
+          # Install hdoc build dependencies
+          sudo apt-get install -y meson libclang-18-dev llvm-18-dev lld-18 xxd libssl-dev
+
+          # Clone hdoc
+          git clone --depth 1 --branch 1.4.1 https://github.com/hdoc/hdoc.git hdoc-src
+          cd hdoc-src
+
+          # Apply LLVM 16+ compatibility patch (llvm::Optional -> std::optional)
+          sed -i 's/llvm::Optional/std::optional/g' src/frontend/Frontend.cpp
+          sed -i 's/llvm::None/std::nullopt/g' src/frontend/Frontend.cpp
+          sed -i '1i #include <optional>' src/frontend/Frontend.cpp
+
+          # Configure and build
+          meson setup build --buildtype=release
+          ninja -C build
+
+          # Install
+          sudo cp build/hdoc /usr/local/bin/
+          cd ..
+          rm -rf hdoc-src
+
       - name: Generate documentation with hdoc
         run: |
-          # Use the official hdoc Docker container which has all dependencies pre-configured
-          docker run --rm \
-            -v "${{ github.workspace }}:/workspace" \
-            -w /workspace \
-            ghcr.io/hdoc/hdoc:latest \
-            hdoc --verbose
+          hdoc --verbose
 
       - name: Create docs directory structure for GitHub Pages
         run: |
