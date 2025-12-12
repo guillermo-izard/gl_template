@@ -1,0 +1,30 @@
+# Doxide configuration for VibeGL
+# See: https://doxide.org/config/
+
+title: VibeGL
+description: Modern OpenGL graphics programming template with C++23
+url: https://kunst.github.io/vibegl/docs/
+
+# Source files to document
+sources:
+  - "src/**/*.hpp"
+  - "src/**/*.cpp"
+
+# Files to exclude
+exclude:
+  - "src/rendering/StbImage.cpp"  # Third-party implementation file
+
+# Output directory for generated Markdown
+output: docs
+
+# GitHub repository for source code links
+repository: https://github.com/guillermo-izard/gl_template
+
+# Theme and appearance
+theme:
+  name: material
+
+# Additional pages (if any)
+pages:
+  - file: README.md
+    title: Home

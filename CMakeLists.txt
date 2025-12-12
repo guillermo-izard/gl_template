@@ -49,6 +49,24 @@ if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
+# Documentation target with Doxide + MkDocs
+find_program(DOXIDE_EXECUTABLE doxide)
+if(DOXIDE_EXECUTABLE)
+    add_custom_target(docs
+        COMMAND ${DOXIDE_EXECUTABLE} build
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Generating documentation with Doxide..."
+        VERBATIM
+    )
+    set(DOXIDE_FOUND TRUE)
+    message(STATUS "Doxide found: ${DOXIDE_EXECUTABLE}")
+    message(STATUS "Run 'cmake --build . --target docs' to generate documentation")
+else()
+    set(DOXIDE_FOUND FALSE)
+    message(STATUS "Doxide not found - documentation target not available")
+    message(STATUS "Install: https://doxide.org/installation/")
+endif()
+
 # Print configuration summary
 message(STATUS "")
 message(STATUS "VibeGL Configuration:")
@@ -59,4 +77,5 @@ message(STATUS "  Sanitizers: ${ENABLE_SANITIZERS}")
 message(STATUS "  Coverage: ${ENABLE_COVERAGE}")
 message(STATUS "  Build Tests: ${BUILD_TESTS}")
 message(STATUS "  LTO (Release): ${lto_supported}")
+message(STATUS "  Documentation (Doxide): ${DOXIDE_FOUND}")
 message(STATUS "")

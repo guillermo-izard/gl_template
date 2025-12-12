@@ -1,0 +1,69 @@
+# MkDocs configuration for VibeGL documentation
+# Works with Doxide-generated Markdown files
+
+site_name: VibeGL Documentation
+site_description: Modern OpenGL graphics programming template with C++23
+site_url: https://kunst.github.io/vibegl/docs/
+repo_url: https://github.com/guillermo-izard/gl_template
+repo_name: guillermo-izard/gl_template
+
+# Material theme for modern, responsive documentation
+theme:
+  name: material
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+# Extensions for better code documentation
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - def_list
+
+# Documentation directory (where Doxide outputs Markdown)
+docs_dir: docs
+
+# Where MkDocs outputs the final HTML site
+site_dir: site
+
+# Plugins
+plugins:
+  - search
+
+# Extra CSS/JS if needed
+# extra_css:
+#   - stylesheets/extra.css
