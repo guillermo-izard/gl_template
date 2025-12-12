@@ -54,23 +54,14 @@ jobs:
         run: |
           cmake --build build/debug --parallel
 
-      - name: Build and install hdoc
-        run: |
-          # Install hdoc build dependencies
-          sudo apt-get install -y meson libclang-18-dev lld-18 xxd
-
-          # Clone and build hdoc
-          git clone --depth 1 --branch 1.4.1 https://github.com/hdoc/hdoc.git hdoc-src
-          cd hdoc-src
-          meson setup build
-          ninja -C build
-          sudo cp build/hdoc /usr/local/bin/
-          cd ..
-          rm -rf hdoc-src
-
       - name: Generate documentation with hdoc
         run: |
-          hdoc --verbose
+          # Use the official hdoc Docker container which has all dependencies pre-configured
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            ghcr.io/hdoc/hdoc:latest \
+            hdoc --verbose
 
       - name: Create docs directory structure for GitHub Pages
         run: |
