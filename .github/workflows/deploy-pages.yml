@@ -55,9 +55,15 @@ jobs:
 
       - name: Generate documentation with Doxide
         run: |
+          echo "Doxide version:"
+          doxide --version || echo "No version flag"
+          echo "Files matching pattern:"
+          ls -la src/**/*.hpp src/**/*.cpp | head -20
           echo "Running doxide build..."
-          doxide build
-          echo "Doxide completed. Checking output:"
+          doxide build 2>&1 | tee doxide_output.log || echo "Doxide failed with code $?"
+          echo "Doxide output was:"
+          cat doxide_output.log
+          echo "Checking docs output:"
           ls -la docs/
           echo "File count in docs:"
           find docs -type f | wc -l
