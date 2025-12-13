@@ -4,11 +4,10 @@
 title: VibeGL
 description: Modern OpenGL graphics programming template with C++23
 
-# Source files to document (use 'files' not 'sources')
+# Source files to document
 files:
   - "src/**/*.hpp"
   - "src/**/*.cpp"
-  - "!src/rendering/StbImage.cpp"  # Exclude third-party implementation
 
 # Output directory for generated Markdown
 output: docs
