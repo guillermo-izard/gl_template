@@ -17,12 +17,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    name: Build WebAssembly
+  build-and-deploy:
+    name: Build WebAssembly and Documentation
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
+      # Build WebAssembly demo
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@v14
         with:
@@ -33,15 +34,48 @@ jobs:
         with:
           cmake-version: '3.28.x'
 
-      - name: Configure
+      - name: Configure WebAssembly build
         run: emcmake cmake --preset emscripten
 
-      - name: Build
+      - name: Build WebAssembly
         run: cmake --build build/emscripten --parallel
 
-      - name: Create index.html redirect
+      # Build Documentation
+      - name: Install Doxide
         run: |
-          cat > build/emscripten/bin/index.html << 'EOF'
+          # Add Indii repository for Doxide
+          echo 'deb http://download.indii.org/deb noble main' | sudo tee /etc/apt/sources.list.d/indii.org.list
+          curl -fsSL https://download.indii.org/deb/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/indii.org.gpg > /dev/null
+          sudo apt-get update
+          sudo apt-get install -y doxide
+
+      - name: Install MkDocs Material
+        run: |
+          pip install mkdocs mkdocs-material
+
+      - name: Generate documentation with Doxide
+        run: |
+          doxide build
+
+      - name: Build HTML documentation with MkDocs
+        run: |
+          mkdocs build
+
+      # Combine both deployments
+      - name: Prepare GitHub Pages artifact
+        run: |
+          # Create output directory
+          mkdir -p gh-pages
+
+          # Copy WebAssembly demo to root
+          cp -r build/emscripten/bin/* gh-pages/
+
+          # Copy documentation to /docs/ subdirectory
+          mkdir -p gh-pages/docs
+          cp -r site/* gh-pages/docs/
+
+          # Create index.html that redirects to demo
+          cat > gh-pages/index.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head>
@@ -51,14 +85,15 @@ jobs:
           </head>
           <body>
             <p>Redirecting to <a href="vibegl.html">VibeGL demo</a>...</p>
+            <p>Or visit the <a href="docs/">API documentation</a>.</p>
           </body>
           </html>
           EOF
 
-      - name: Upload artifact
+      - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'build/emscripten/bin'
+          path: 'gh-pages'
 
   deploy:
     name: Deploy to GitHub Pages
@@ -66,7 +101,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-24.04
-    needs: build
+    needs: build-and-deploy
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
