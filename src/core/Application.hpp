@@ -1,22 +1,22 @@
 #pragma once
 
-/// @file Application.hpp
-/// @brief Base application class with platform-abstracted main loop
+/// @file
+/// Base application class with platform-abstracted main loop.
 
 #include "GLIncludes.hpp"
 #include <string>
 
 namespace vibegl {
 
-/// @brief Configuration for creating an Application window
+/// Configuration for creating an Application window.
 struct WindowConfig {
-    std::string title = "VibeGL";
-    int width = 1280;
-    int height = 720;
-    bool vsync = true;
+    std::string title = "VibeGL";  ///< Window title displayed in title bar
+    int width = 1280;               ///< Initial window width in pixels
+    int height = 720;               ///< Initial window height in pixels
+    bool vsync = true;              ///< Enable vertical synchronization
 };
 
-/// @brief Base class for applications with platform-abstracted main loop
+/// Base class for applications with platform-abstracted main loop.
 ///
 /// Derive from this class and implement onInit(), onTick(), and onShutdown().
 /// The run() method handles the platform-specific main loop:
@@ -24,7 +24,7 @@ struct WindowConfig {
 /// - Web: emscripten_set_main_loop callback
 ///
 /// Example:
-/// @code
+/// ```cpp
 /// class MyApp : public Application {
 /// protected:
 ///     void onInit() override { /* load resources */ }
@@ -36,13 +36,13 @@ struct WindowConfig {
 ///     MyApp app;
 ///     app.run();
 /// }
-/// @endcode
+/// ```
 class Application {
 public:
-    /// @brief Construct application with given window configuration
+    /// Construct application with given window configuration.
     explicit Application(const WindowConfig& config = {});
 
-    /// @brief Virtual destructor for proper cleanup in derived classes
+    /// Virtual destructor for proper cleanup in derived classes.
     virtual ~Application();
 
     // Non-copyable, non-movable
@@ -51,21 +51,21 @@ public:
     Application(Application&&) = delete;
     Application& operator=(Application&&) = delete;
 
-    /// @brief Start the main loop (blocking on desktop, returns on web)
+    /// Start the main loop (blocking on desktop, returns on web).
     void run();
 
 protected:
-    /// @brief Called once after window and OpenGL context are ready
+    /// Called once after window and OpenGL context are ready.
     virtual void onInit() {}
 
-    /// @brief Called every frame with delta time in seconds
+    /// Called every frame with delta time in seconds.
     /// @param deltaTime Time elapsed since last frame
     virtual void onTick(float deltaTime) = 0;
 
-    /// @brief Called once before application exits (desktop only)
+    /// Called once before application exits (desktop only).
     virtual void onShutdown() {}
 
-    /// @brief Check if application should quit
+    /// Check if application should quit.
     /// @return true if window close was requested
     virtual bool shouldQuit() const;
 
@@ -75,26 +75,26 @@ protected:
     int getWindowHeight() const;
     float getAspectRatio() const;
 
-    /// @brief Swap buffers and poll events (call at end of onTick)
+    /// Swap buffers and poll events (call at end of onTick).
     void endFrame();
 
 private:
-    /// @brief Initialize GLFW and create window
+    /// Initialize GLFW and create window.
     bool initWindow(const WindowConfig& config);
 
-    /// @brief Initialize OpenGL loader (GLAD on desktop)
+    /// Initialize OpenGL loader (GLAD on desktop).
     bool initOpenGL();
 
-    /// @brief Initialize ImGui with GLFW and OpenGL backends
+    /// Initialize ImGui with GLFW and OpenGL backends.
     void initImGui();
 
-    /// @brief Shutdown ImGui
+    /// Shutdown ImGui.
     void shutdownImGui();
 
-    /// @brief Internal tick function called by main loop
+    /// Internal tick function called by main loop.
     void tick();
 
-    /// @brief Static callback for Emscripten main loop
+    /// Static callback for Emscripten main loop.
     static void emscriptenMainLoop(void* arg);
 
     GLFWwindow* window_ = nullptr;
