@@ -1,5 +1,5 @@
-/// @file main.cpp
-/// @brief Application entry point
+/// @file
+/// Application entry point.
 
 #include <spdlog/spdlog.h>
 
