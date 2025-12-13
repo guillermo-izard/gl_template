@@ -55,7 +55,12 @@ jobs:
 
       - name: Generate documentation with Doxide
         run: |
+          echo "Running doxide build..."
           doxide build
+          echo "Doxide completed. Checking output:"
+          ls -la docs/
+          echo "File count in docs:"
+          find docs -type f | wc -l
 
       - name: Build HTML documentation with MkDocs
         run: |
