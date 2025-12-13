@@ -57,16 +57,21 @@ jobs:
         run: |
           echo "Doxide version:"
           doxide --version || echo "No version flag"
-          echo "Files matching pattern:"
-          ls -la src/**/*.hpp src/**/*.cpp | head -20
-          echo "Running doxide build..."
-          doxide build 2>&1 | tee doxide_output.log || echo "Doxide failed with code $?"
-          echo "Doxide output was:"
-          cat doxide_output.log
+          echo "Current directory:"
+          pwd
+          echo "Config file:"
+          cat doxide.yaml
+          echo "Files matching .hpp pattern:"
+          find src -name "*.hpp"
+          echo "Running doxide build with verbose output..."
+          set -x
+          doxide build
+          set +x
+          echo "Exit code: $?"
           echo "Checking docs output:"
-          ls -la docs/
-          echo "File count in docs:"
-          find docs -type f | wc -l
+          ls -laR docs/
+          echo "Total file count in docs:"
+          find docs -type f
 
       - name: Build HTML documentation with MkDocs
         run: |
