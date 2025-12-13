@@ -1,14 +1,14 @@
 #pragma once
 
-/// @file VibeGLApp.hpp
-/// @brief Demo application showing a rotating textured cube
+/// @file
+/// Demo application showing a rotating textured cube.
 
 #include "core/Application.hpp"
 #include <array>
 
 namespace vibegl {
 
-/// @brief Demo application with rotating textured cube and ImGui controls
+/// Demo application with rotating textured cube and ImGui controls.
 class VibeGLApp : public Application {
 public:
     VibeGLApp();

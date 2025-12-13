@@ -1,7 +1,7 @@
 #pragma once
 
-/// @file GLIncludes.hpp
-/// @brief Platform-specific OpenGL header includes
+/// @file
+/// Platform-specific OpenGL header includes.
 ///
 /// This header handles the differences between desktop OpenGL (GLAD loader)
 /// and WebGL/OpenGL ES (provided directly by Emscripten).
