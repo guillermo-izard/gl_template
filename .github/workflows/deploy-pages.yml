@@ -41,41 +41,20 @@ jobs:
         run: cmake --build build/emscripten --parallel
 
       # Build Documentation
-      - name: Install Doxide
+      - name: Install Doxygen
         run: |
-          # Add Indii repository for Doxide
-          echo 'deb http://download.indii.org/deb noble main' | sudo tee /etc/apt/sources.list.d/indii.org.list
-          curl -fsSL https://download.indii.org/deb/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/indii.org.gpg > /dev/null
           sudo apt-get update
-          sudo apt-get install -y doxide
+          sudo apt-get install -y doxygen
 
-      - name: Install MkDocs Material
+      - name: Generate documentation with Doxygen
         run: |
-          pip install mkdocs mkdocs-material
-
-      - name: Generate documentation with Doxide
-        run: |
-          echo "Doxide version:"
-          doxide --version || echo "No version flag"
-          echo "Current directory:"
-          pwd
-          echo "Config file:"
-          cat doxide.yaml
-          echo "Files matching .hpp pattern:"
-          find src -name "*.hpp"
-          echo "Running doxide build with verbose output..."
-          set -x
-          doxide build
-          set +x
-          echo "Exit code: $?"
+          echo "Doxygen version:"
+          doxygen --version
+          echo "Generating documentation..."
+          doxygen Doxyfile
           echo "Checking docs output:"
-          ls -laR docs/
-          echo "Total file count in docs:"
-          find docs -type f
-
-      - name: Build HTML documentation with MkDocs
-        run: |
-          mkdocs build
+          ls -la docs/ | head -20
+          echo "Documentation generated successfully"
 
       # Combine both deployments
       - name: Prepare GitHub Pages artifact

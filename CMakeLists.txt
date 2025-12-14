@@ -49,22 +49,22 @@ if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-# Documentation target with Doxide + MkDocs
-find_program(DOXIDE_EXECUTABLE doxide)
-if(DOXIDE_EXECUTABLE)
+# Documentation target with Doxygen
+find_program(DOXYGEN_EXECUTABLE doxygen)
+if(DOXYGEN_EXECUTABLE)
     add_custom_target(docs
-        COMMAND ${DOXIDE_EXECUTABLE} build
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Doxyfile
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMENT "Generating documentation with Doxide..."
+        COMMENT "Generating documentation with Doxygen..."
         VERBATIM
     )
-    set(DOXIDE_FOUND TRUE)
-    message(STATUS "Doxide found: ${DOXIDE_EXECUTABLE}")
+    set(DOXYGEN_FOUND TRUE)
+    message(STATUS "Doxygen found: ${DOXYGEN_EXECUTABLE}")
     message(STATUS "Run 'cmake --build . --target docs' to generate documentation")
 else()
-    set(DOXIDE_FOUND FALSE)
-    message(STATUS "Doxide not found - documentation target not available")
-    message(STATUS "Install: https://doxide.org/installation/")
+    set(DOXYGEN_FOUND FALSE)
+    message(STATUS "Doxygen not found - documentation target not available")
+    message(STATUS "Install: https://www.doxygen.nl/download.html")
 endif()
 
 # Print configuration summary
@@ -77,5 +77,5 @@ message(STATUS "  Sanitizers: ${ENABLE_SANITIZERS}")
 message(STATUS "  Coverage: ${ENABLE_COVERAGE}")
 message(STATUS "  Build Tests: ${BUILD_TESTS}")
 message(STATUS "  LTO (Release): ${lto_supported}")
-message(STATUS "  Documentation (Doxide): ${DOXIDE_FOUND}")
+message(STATUS "  Documentation (Doxygen): ${DOXYGEN_FOUND}")
 message(STATUS "")
