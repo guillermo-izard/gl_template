@@ -67,7 +67,7 @@ jobs:
 
           # Copy documentation to /docs/ subdirectory
           mkdir -p gh-pages/docs
-          cp -r site/* gh-pages/docs/
+          cp -r docs/* gh-pages/docs/
 
           # Create index.html that redirects to demo
           cat > gh-pages/index.html << 'EOF'
