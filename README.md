@@ -16,7 +16,7 @@ A modern OpenGL graphics programming template with C++23, featuring a clean CMak
 - **GitHub Actions CI/CD** with multiple compiler support
 - **Code quality tools**: clang-format, clang-tidy, shader validation
 - **Development tools**: code coverage, memory profiling (Valgrind)
-- **API Documentation** with Doxide and MkDocs Material, automatically generated and deployed
+- **API Documentation** with Doxygen, automatically generated and deployed
 
 ## Demo & Documentation
 
@@ -159,7 +159,7 @@ Or use the VS Code launch configurations which automatically set the correct wor
 
 ## Generating Documentation
 
-VibeGL uses [Doxide](https://doxide.org/) to generate API documentation with modern, responsive output via MkDocs Material.
+VibeGL uses [Doxygen](https://www.doxygen.nl/) to generate API documentation.
 
 ### Online Documentation
 
@@ -169,27 +169,21 @@ VibeGL uses [Doxide](https://doxide.org/) to generate API documentation with mod
 
 **Prerequisites:**
 ```bash
-# Install Doxide (Ubuntu 24.04)
-echo 'deb http://download.indii.org/deb noble main' | sudo tee /etc/apt/sources.list.d/indii.org.list
-curl -fsSL https://download.indii.org/deb/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/indii.org.gpg > /dev/null
-sudo apt update
-sudo apt install doxide
+# Install Doxygen (Ubuntu/Debian)
+sudo apt-get install doxygen
 
-# Install MkDocs Material
-pip install mkdocs mkdocs-material
+# Or on macOS
+brew install doxygen
 ```
 
 **Generate docs:**
 ```bash
-# Generate Markdown with Doxide
-doxide build
+# Generate HTML documentation
+doxygen Doxyfile
 
-# Build HTML with MkDocs
-mkdocs build
-
-# Serve locally
-mkdocs serve
-# Open http://localhost:8000
+# Open the documentation
+xdg-open docs/index.html  # Linux
+open docs/index.html      # macOS
 ```
 
 **Or use CMake:**
@@ -197,14 +191,14 @@ mkdocs serve
 cmake --build build/debug --target docs
 ```
 
-The documentation is generated from specially formatted comments in the source code (Doxygen-style):
+The documentation is generated from specially formatted comments in the source code:
 ```cpp
 /// @brief Brief description of the function
 /// @param paramName Description of the parameter
-/// @returns Description of return value
+/// @return Description of return value
 ```
 
-Documentation configuration is in `doxide.yaml` and `mkdocs.yml`.
+Documentation configuration is in `Doxyfile`.
 
 ## Development
 
