@@ -18,6 +18,7 @@ namespace vibegl
 {
 
 Application::Application(const WindowConfig& config)
+    : assetBasePath_(config.assetBasePath)
 {
     if (!initWindow(config))
     {
@@ -66,9 +67,6 @@ bool Application::initWindow(const WindowConfig& config)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
 #endif
 
     window_ = glfwCreateWindow(config.width, config.height, config.title.c_str(), nullptr, nullptr);
@@ -84,8 +82,17 @@ bool Application::initWindow(const WindowConfig& config)
     // Set up callbacks
     glfwSetWindowUserPointer(window_, this);
 
-    glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* /*win*/, int width, int height)
-                                   { glViewport(0, 0, width, height); });
+    // Set up framebuffer size callback to update cached dimensions
+    glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* win, int width, int height)
+                                   {
+                                       glViewport(0, 0, width, height);
+                                       auto* app = static_cast<Application*>(glfwGetWindowUserPointer(win));
+                                       app->framebufferWidth_ = width;
+                                       app->framebufferHeight_ = height;
+                                   });
+
+    // Initialize cached dimensions
+    glfwGetFramebufferSize(window_, &framebufferWidth_, &framebufferHeight_);
 
     glfwSetKeyCallback(window_,
                        [](GLFWwindow* win, int key, int /*scancode*/, int action, int /*mods*/)
@@ -188,18 +195,12 @@ bool Application::shouldQuit() const
 
 int Application::getWindowWidth() const
 {
-    int width = 0;
-    int height = 0;
-    glfwGetFramebufferSize(window_, &width, &height);
-    return width;
+    return framebufferWidth_;
 }
 
 int Application::getWindowHeight() const
 {
-    int width = 0;
-    int height = 0;
-    glfwGetFramebufferSize(window_, &width, &height);
-    return height;
+    return framebufferHeight_;
 }
 
 float Application::getAspectRatio() const
@@ -211,6 +212,15 @@ float Application::getAspectRatio() const
         return 1.0f;
     }
     return static_cast<float>(width) / static_cast<float>(height);
+}
+
+std::string Application::resolvePath(const std::string& relativePath) const
+{
+    if (assetBasePath_.empty())
+    {
+        return relativePath;
+    }
+    return assetBasePath_ + relativePath;
 }
 
 void Application::endFrame()

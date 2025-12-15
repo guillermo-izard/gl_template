@@ -78,20 +78,31 @@ VibeGLApp::~VibeGLApp() = default;
 void VibeGLApp::onInit()
 {
     // Load shader program with automatic platform suffix
-    shaderProgram_ = ShaderManager::loadProgram("cube", "data/shaders/");
-    if (shaderProgram_ == 0)
+    auto shaderResult = ShaderManager::loadProgram("cube", resolvePath("data/shaders/"));
+    if (!shaderResult)
     {
-        spdlog::error("Failed to create shader program");
+        spdlog::error("Failed to create shader program: {} - {}",
+                      shaderResult.error().message,
+                      shaderResult.error().context);
         return;
     }
+    shaderProgram_ = shaderResult.value();
+
+    // Cache shader uniform locations for efficiency (avoid glGetUniformLocation per frame)
+    shaderLocations_.mvp = glGetUniformLocation(shaderProgram_, "uMVP");
+    shaderLocations_.color = glGetUniformLocation(shaderProgram_, "uColor");
+    shaderLocations_.texture = glGetUniformLocation(shaderProgram_, "uTexture");
 
     // Load texture
-    texture_ = TextureLoader::loadTexture("data/textures/sample.png");
-    if (texture_ == 0)
+    auto textureResult = TextureLoader::loadTexture(resolvePath("data/textures/sample.png"));
+    if (!textureResult)
     {
-        spdlog::error("Failed to load texture");
+        spdlog::error("Failed to load texture: {} - {}",
+                      textureResult.error().message,
+                      textureResult.error().context);
         return;
     }
+    texture_ = textureResult.value();
 
     setupCubeGeometry();
     glEnable(GL_DEPTH_TEST);
@@ -179,17 +190,14 @@ void VibeGLApp::renderCube()
     // MVP
     glm::mat4 mvp = projection * view * model;
 
-    GLint mvpLoc = glGetUniformLocation(shaderProgram_, "uMVP");
-    glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
-
-    GLint colorLoc = glGetUniformLocation(shaderProgram_, "uColor");
-    glUniform3fv(colorLoc, 1, cubeColor_.data());
+    // Use cached uniform locations (queried once during initialization)
+    glUniformMatrix4fv(shaderLocations_.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniform3fv(shaderLocations_.color, 1, cubeColor_.data());
 
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture_);
-    GLint texLoc = glGetUniformLocation(shaderProgram_, "uTexture");
-    glUniform1i(texLoc, 0);
+    glUniform1i(shaderLocations_.texture, 0);
 
     // Draw
     glBindVertexArray(vao_);

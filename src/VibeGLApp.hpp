@@ -8,6 +8,13 @@
 
 namespace vibegl {
 
+/// Cached uniform locations for shader program efficiency.
+struct ShaderLocations {
+    GLint mvp = -1;
+    GLint color = -1;
+    GLint texture = -1;
+};
+
 /// Demo application with rotating textured cube and ImGui controls.
 class VibeGLApp : public Application {
 public:
@@ -36,6 +43,9 @@ private:
     GLuint vao_ = 0;
     GLuint vbo_ = 0;
     GLuint ebo_ = 0;
+
+    // Cached shader uniform locations
+    ShaderLocations shaderLocations_;
 
     // Animation state
     float rotationAngle_ = 0.0f;

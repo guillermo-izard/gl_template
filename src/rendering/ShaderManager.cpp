@@ -2,6 +2,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <cerrno>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -11,44 +13,45 @@
 namespace vibegl
 {
 
-GLuint ShaderManager::loadProgram(const std::string& baseName, const std::string& directory)
+Result<GLuint> ShaderManager::loadProgram(const std::string& baseName, const std::string& directory)
 {
     std::string vertPath = directory + baseName + kShaderSuffix + ".vert";
     std::string fragPath = directory + baseName + kShaderSuffix + ".frag";
     return loadProgramFromFiles(vertPath, fragPath);
 }
 
-GLuint ShaderManager::loadProgramFromFiles(const std::string& vertPath, const std::string& fragPath)
+Result<GLuint> ShaderManager::loadProgramFromFiles(const std::string& vertPath, const std::string& fragPath)
 {
-    std::string vertSource = readFile(vertPath);
-    std::string fragSource = readFile(fragPath);
-
-    if (vertSource.empty() || fragSource.empty())
+    auto vertSource = readFile(vertPath);
+    if (!vertSource)
     {
-        return 0;
+        return std::unexpected(vertSource.error());
     }
 
-    GLuint vertShader = compileShader(GL_VERTEX_SHADER, vertSource);
-    GLuint fragShader = compileShader(GL_FRAGMENT_SHADER, fragSource);
-
-    if (vertShader == 0 || fragShader == 0)
+    auto fragSource = readFile(fragPath);
+    if (!fragSource)
     {
-        if (vertShader != 0)
-        {
-            glDeleteShader(vertShader);
-        }
-        if (fragShader != 0)
-        {
-            glDeleteShader(fragShader);
-        }
-        return 0;
+        return std::unexpected(fragSource.error());
     }
 
-    GLuint program = linkProgram(vertShader, fragShader);
+    auto vertShader = compileShader(GL_VERTEX_SHADER, vertSource.value());
+    if (!vertShader)
+    {
+        return std::unexpected(vertShader.error());
+    }
+
+    auto fragShader = compileShader(GL_FRAGMENT_SHADER, fragSource.value());
+    if (!fragShader)
+    {
+        glDeleteShader(vertShader.value());
+        return std::unexpected(fragShader.error());
+    }
+
+    auto program = linkProgram(vertShader.value(), fragShader.value());
 
     // Shaders can be deleted after linking
-    glDeleteShader(vertShader);
-    glDeleteShader(fragShader);
+    glDeleteShader(vertShader.value());
+    glDeleteShader(fragShader.value());
 
     return program;
 }
@@ -61,13 +64,16 @@ void ShaderManager::deleteProgram(GLuint program)
     }
 }
 
-std::string ShaderManager::readFile(const std::string& path)
+Result<std::string> ShaderManager::readFile(const std::string& path)
 {
     std::ifstream file(path);
     if (!file.is_open())
     {
-        spdlog::error("Failed to open shader file: {}", path);
-        return "";
+        int err = errno;
+        return std::unexpected(Error{
+            .message = "Failed to open shader file",
+            .context = path + " (errno: " + std::to_string(err) + " - " + std::strerror(err) + ")"
+        });
     }
 
     std::stringstream buffer;
@@ -75,7 +81,7 @@ std::string ShaderManager::readFile(const std::string& path)
     return buffer.str();
 }
 
-GLuint ShaderManager::compileShader(GLenum type, const std::string& source)
+Result<GLuint> ShaderManager::compileShader(GLenum type, const std::string& source)
 {
     GLuint shader = glCreateShader(type);
     const char* src = source.c_str();
@@ -93,16 +99,18 @@ GLuint ShaderManager::compileShader(GLenum type, const std::string& source)
         glGetShaderInfoLog(shader, logLength, &logLength, errorLog.data());
 
         const char* typeName = (type == GL_VERTEX_SHADER) ? "vertex" : "fragment";
-        spdlog::error("{} shader compilation failed: {}", typeName, errorLog.data());
 
         glDeleteShader(shader);
-        return 0;
+        return std::unexpected(Error{
+            .message = std::string(typeName) + " shader compilation failed",
+            .context = std::string(errorLog.data())
+        });
     }
 
     return shader;
 }
 
-GLuint ShaderManager::linkProgram(GLuint vertShader, GLuint fragShader)
+Result<GLuint> ShaderManager::linkProgram(GLuint vertShader, GLuint fragShader)
 {
     GLuint program = glCreateProgram();
     glAttachShader(program, vertShader);
@@ -119,10 +127,11 @@ GLuint ShaderManager::linkProgram(GLuint vertShader, GLuint fragShader)
         std::vector<char> errorLog(static_cast<size_t>(logLength));
         glGetProgramInfoLog(program, logLength, &logLength, errorLog.data());
 
-        spdlog::error("Shader program linking failed: {}", errorLog.data());
-
         glDeleteProgram(program);
-        return 0;
+        return std::unexpected(Error{
+            .message = "Shader program linking failed",
+            .context = std::string(errorLog.data())
+        });
     }
 
     return program;
