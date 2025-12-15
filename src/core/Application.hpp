@@ -14,6 +14,7 @@ struct WindowConfig {
     int width = 1280;               ///< Initial window width in pixels
     int height = 720;               ///< Initial window height in pixels
     bool vsync = true;              ///< Enable vertical synchronization
+    std::string assetBasePath = "";  ///< Base path for assets (empty = current directory)
 };
 
 /// Base class for applications with platform-abstracted main loop.
@@ -75,6 +76,11 @@ protected:
     int getWindowHeight() const;
     float getAspectRatio() const;
 
+    /// Resolve asset path relative to configured base path.
+    /// @param relativePath Path relative to asset base (e.g., "shaders/cube_gl46.vert")
+    /// @return Full path with base path prepended
+    std::string resolvePath(const std::string& relativePath) const;
+
     /// Swap buffers and poll events (call at end of onTick).
     void endFrame();
 
@@ -100,6 +106,9 @@ private:
     GLFWwindow* window_ = nullptr;
     float lastFrameTime_ = 0.0f;
     bool initialized_ = false;
+    std::string assetBasePath_;  ///< Base path for asset loading
+    int framebufferWidth_ = 0;   ///< Cached framebuffer width
+    int framebufferHeight_ = 0;  ///< Cached framebuffer height
 };
 
 } // namespace vibegl

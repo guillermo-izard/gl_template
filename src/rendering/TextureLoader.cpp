@@ -7,7 +7,7 @@
 namespace vibegl
 {
 
-GLuint TextureLoader::loadTexture(const std::string& filepath, bool flipVertically)
+Result<GLuint> TextureLoader::loadTexture(const std::string& filepath, bool flipVertically)
 {
     int width = 0;
     int height = 0;
@@ -18,8 +18,11 @@ GLuint TextureLoader::loadTexture(const std::string& filepath, bool flipVertical
 
     if (data == nullptr)
     {
-        spdlog::error("Failed to load texture: {}", filepath);
-        return 0;
+        const char* reason = stbi_failure_reason();
+        return std::unexpected(Error{
+            .message = "Failed to load texture",
+            .context = filepath + " (" + (reason ? reason : "unknown error") + ")"
+        });
     }
 
     GLuint texture = 0;
