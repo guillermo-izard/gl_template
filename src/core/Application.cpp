@@ -17,8 +17,7 @@
 namespace vibegl
 {
 
-Application::Application(const WindowConfig& config)
-    : assetBasePath_(config.assetBasePath)
+Application::Application(const WindowConfig& config) : assetBasePath_(config.assetBasePath)
 {
     if (!initWindow(config))
     {
@@ -83,10 +82,12 @@ bool Application::initWindow(const WindowConfig& config)
     glfwSetWindowUserPointer(window_, this);
 
     // Set up framebuffer size callback to update cached dimensions
-    glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* win, int width, int height)
+    glfwSetFramebufferSizeCallback(window_,
+                                   [](GLFWwindow* win, int width, int height)
                                    {
                                        glViewport(0, 0, width, height);
-                                       auto* app = static_cast<Application*>(glfwGetWindowUserPointer(win));
+                                       auto* app =
+                                           static_cast<Application*>(glfwGetWindowUserPointer(win));
                                        app->framebufferWidth_ = width;
                                        app->framebufferHeight_ = height;
                                    });
