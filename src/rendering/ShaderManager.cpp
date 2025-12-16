@@ -13,6 +13,22 @@
 namespace vibegl
 {
 
+/// Get error message for errno. Cross-platform helper to avoid MSVC warnings about strerror.
+/// @param err errno value
+/// @return Error message string
+static std::string getErrorMessage(int err)
+{
+#ifdef _WIN32
+    // MSVC: Use strerror_s for safer error message retrieval
+    char buffer[256] = {0};
+    strerror_s(buffer, sizeof(buffer), err);
+    return buffer;
+#else
+    // POSIX: Use standard strerror
+    return std::strerror(err);
+#endif
+}
+
 Result<GLuint> ShaderManager::loadProgram(const std::string& baseName, const std::string& directory)
 {
     std::string vertPath = directory + baseName + kShaderSuffix + ".vert";
@@ -20,7 +36,8 @@ Result<GLuint> ShaderManager::loadProgram(const std::string& baseName, const std
     return loadProgramFromFiles(vertPath, fragPath);
 }
 
-Result<GLuint> ShaderManager::loadProgramFromFiles(const std::string& vertPath, const std::string& fragPath)
+Result<GLuint> ShaderManager::loadProgramFromFiles(const std::string& vertPath,
+                                                   const std::string& fragPath)
 {
     auto vertSource = readFile(vertPath);
     if (!vertSource)
@@ -70,10 +87,9 @@ Result<std::string> ShaderManager::readFile(const std::string& path)
     if (!file.is_open())
     {
         int err = errno;
-        return std::unexpected(Error{
-            .message = "Failed to open shader file",
-            .context = path + " (errno: " + std::to_string(err) + " - " + std::strerror(err) + ")"
-        });
+        return std::unexpected(Error{.message = "Failed to open shader file",
+                                     .context = path + " (errno: " + std::to_string(err) + " - " +
+                                                getErrorMessage(err) + ")"});
     }
 
     std::stringstream buffer;
@@ -101,10 +117,9 @@ Result<GLuint> ShaderManager::compileShader(GLenum type, const std::string& sour
         const char* typeName = (type == GL_VERTEX_SHADER) ? "vertex" : "fragment";
 
         glDeleteShader(shader);
-        return std::unexpected(Error{
-            .message = std::string(typeName) + " shader compilation failed",
-            .context = std::string(errorLog.data())
-        });
+        return std::unexpected(
+            Error{.message = std::string(typeName) + " shader compilation failed",
+                  .context = std::string(errorLog.data())});
     }
 
     return shader;
@@ -128,10 +143,8 @@ Result<GLuint> ShaderManager::linkProgram(GLuint vertShader, GLuint fragShader)
         glGetProgramInfoLog(program, logLength, &logLength, errorLog.data());
 
         glDeleteProgram(program);
-        return std::unexpected(Error{
-            .message = "Shader program linking failed",
-            .context = std::string(errorLog.data())
-        });
+        return std::unexpected(Error{.message = "Shader program linking failed",
+                                     .context = std::string(errorLog.data())});
     }
 
     return program;

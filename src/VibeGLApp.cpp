@@ -81,8 +81,7 @@ void VibeGLApp::onInit()
     auto shaderResult = ShaderManager::loadProgram("cube", resolvePath("data/shaders/"));
     if (!shaderResult)
     {
-        spdlog::error("Failed to create shader program: {} - {}",
-                      shaderResult.error().message,
+        spdlog::error("Failed to create shader program: {} - {}", shaderResult.error().message,
                       shaderResult.error().context);
         return;
     }
@@ -97,8 +96,7 @@ void VibeGLApp::onInit()
     auto textureResult = TextureLoader::loadTexture(resolvePath("data/textures/sample.png"));
     if (!textureResult)
     {
-        spdlog::error("Failed to load texture: {} - {}",
-                      textureResult.error().message,
+        spdlog::error("Failed to load texture: {} - {}", textureResult.error().message,
                       textureResult.error().context);
         return;
     }

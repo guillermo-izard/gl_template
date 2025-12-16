@@ -19,10 +19,9 @@ Result<GLuint> TextureLoader::loadTexture(const std::string& filepath, bool flip
     if (data == nullptr)
     {
         const char* reason = stbi_failure_reason();
-        return std::unexpected(Error{
-            .message = "Failed to load texture",
-            .context = filepath + " (" + (reason ? reason : "unknown error") + ")"
-        });
+        return std::unexpected(
+            Error{.message = "Failed to load texture",
+                  .context = filepath + " (" + (reason ? reason : "unknown error") + ")"});
     }
 
     GLuint texture = 0;
