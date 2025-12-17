@@ -151,10 +151,11 @@ jobs:
         env:
           CC: clang-18
           CXX: clang++-18
-        run: cmake --preset debug \
-          -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
-          -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++" \
-          -DCMAKE_SHARED_LINKER_FLAGS="-stdlib=libc++"
+        run: |
+          cmake --preset debug \
+            -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+            -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-stdlib=libc++"
 
       - name: Run clang-tidy
         run: |
