@@ -63,6 +63,11 @@ jobs:
             libgl1-mesa-dev \
             ${{ matrix.cxx }}
 
+          # For Clang with C++23, we need libc++ (libstdc++ with Clang doesn't have std::expected)
+          if [ "${{ matrix.compiler }}" = "clang-18" ]; then
+            sudo apt-get install -y libc++-18-dev libc++abi-18-dev
+          fi
+
       - name: Install Windows dependencies
         if: runner.os == 'Windows'
         run: |
@@ -82,7 +87,15 @@ jobs:
         env:
           CC: ${{ matrix.cc }}
           CXX: ${{ matrix.cxx }}
-        run: cmake --preset ${{ matrix.preset }}
+        run: |
+          if [ "${{ matrix.compiler }}" = "clang-18" ]; then
+            cmake --preset ${{ matrix.preset }} \
+              -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+              -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++" \
+              -DCMAKE_SHARED_LINKER_FLAGS="-stdlib=libc++"
+          else
+            cmake --preset ${{ matrix.preset }}
+          fi
 
       - name: Configure (Windows)
         if: runner.os == 'Windows'
@@ -121,6 +134,8 @@ jobs:
             ninja-build \
             clang-18 \
             clang-tidy-18 \
+            libc++-18-dev \
+            libc++abi-18-dev \
             libxrandr-dev \
             libxinerama-dev \
             libxcursor-dev \
@@ -136,7 +151,10 @@ jobs:
         env:
           CC: clang-18
           CXX: clang++-18
-        run: cmake --preset debug
+        run: cmake --preset debug \
+          -DCMAKE_CXX_FLAGS="-stdlib=libc++" \
+          -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++" \
+          -DCMAKE_SHARED_LINKER_FLAGS="-stdlib=libc++"
 
       - name: Run clang-tidy
         run: |
