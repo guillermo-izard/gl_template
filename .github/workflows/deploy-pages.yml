@@ -41,19 +41,21 @@ jobs:
         run: cmake --build build/emscripten --parallel
 
       # Build Documentation
-      - name: Install Doxygen
+      - name: Install Doxygen and Graphviz
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen
+          sudo apt-get install -y doxygen graphviz
 
       - name: Generate documentation with Doxygen
         run: |
           echo "Doxygen version:"
           doxygen --version
-          echo "Generating documentation..."
+          echo "Graphviz dot version:"
+          dot -V
+          echo "Generating documentation with diagrams..."
           doxygen Doxyfile
           echo "Checking docs output:"
-          ls -la docs/ | head -20
+          ls -la docs/html/ | head -20
           echo "Documentation generated successfully"
 
       # Combine both deployments
@@ -67,7 +69,7 @@ jobs:
 
           # Copy documentation to /docs/ subdirectory
           mkdir -p gh-pages/docs
-          cp -r docs/* gh-pages/docs/
+          cp -r docs/html/* gh-pages/docs/
 
           # Create index.html that redirects to demo
           cat > gh-pages/index.html << 'EOF'
