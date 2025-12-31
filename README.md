@@ -159,7 +159,7 @@ Or use the VS Code launch configurations which automatically set the correct wor
 
 ## Generating Documentation
 
-VibeGL uses [Doxygen](https://www.doxygen.nl/) to generate API documentation.
+VibeGL uses [Doxygen](https://www.doxygen.nl/) to generate comprehensive API documentation with class diagrams, call graphs, and interactive source browsing.
 
 ### Online Documentation
 
@@ -169,21 +169,25 @@ VibeGL uses [Doxygen](https://www.doxygen.nl/) to generate API documentation.
 
 **Prerequisites:**
 ```bash
-# Install Doxygen (Ubuntu/Debian)
-sudo apt-get install doxygen
+# Install Doxygen and Graphviz (Ubuntu/Debian)
+sudo apt-get install doxygen graphviz
 
 # Or on macOS
-brew install doxygen
+brew install doxygen graphviz
+
+# Or on Arch Linux
+sudo pacman -S doxygen graphviz
 ```
 
 **Generate docs:**
 ```bash
-# Generate HTML documentation
+# Generate HTML documentation with diagrams
 doxygen Doxyfile
 
 # Open the documentation
-xdg-open docs/index.html  # Linux
-open docs/index.html      # macOS
+xdg-open docs/html/index.html  # Linux
+open docs/html/index.html      # macOS
+start docs/html/index.html     # Windows
 ```
 
 **Or use CMake:**
@@ -191,14 +195,33 @@ open docs/index.html      # macOS
 cmake --build build/debug --target docs
 ```
 
+### Documentation Features
+
+The generated documentation includes:
+
+- **Class hierarchy diagrams** with inheritance relationships
+- **Collaboration diagrams** showing class dependencies
+- **Call graphs** and **caller graphs** for functions
+- **File dependency graphs** showing include relationships
+- **Interactive source code browser** with syntax highlighting
+- **Full-text search** across all documentation
+- **Platform-specific documentation** for desktop and web builds
+
 The documentation is generated from specially formatted comments in the source code:
 ```cpp
+/// @file
+/// Brief file description
+
 /// @brief Brief description of the function
 /// @param paramName Description of the parameter
 /// @return Description of return value
+void myFunction(int paramName);
 ```
 
-Documentation configuration is in `Doxyfile`.
+**Configuration:**
+- `Doxyfile` - Main documentation configuration
+- `docs/mainpage.md` - Documentation homepage and overview
+- `docs/html/` - Generated HTML output (auto-generated, git-ignored)
 
 ## Development
 
