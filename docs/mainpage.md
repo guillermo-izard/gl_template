@@ -233,7 +233,7 @@ The @ref vibegl::ShaderManager automatically selects the correct variant based o
 
 ### Demo Application
 
-- @ref VibeGLApp - Example application demonstrating the API
+- @ref vibegl::VibeGLApp - Example application demonstrating the API
 
 ---
 
@@ -346,7 +346,7 @@ All dependencies are automatically fetched via CMake FetchContent:
 
 ## Example Application
 
-See @ref VibeGLApp for a complete example demonstrating:
+See @ref vibegl::VibeGLApp for a complete example demonstrating:
 
 - Custom @ref vibegl::Application subclass
 - Shader and texture loading
@@ -372,4 +372,4 @@ MIT License - See LICENSE file for details.
 
 ---
 
-*Generated with Doxygen - Last updated: @DATE@*
+*Generated with Doxygen*
